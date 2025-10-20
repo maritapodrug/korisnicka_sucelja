@@ -18,7 +18,7 @@
 
 ### Semester Assignments
 
-- Assignment 1: Idea Pitch: [**EscapeBook_Idea_Pitch.pdf**](https://github.com/maritapodrug/korisnicka_sucelja/blob/main/EscapeBook_Idea_Pitch.pdf), Video Pitch: [**IdeaPitch.mp4**]()  <!-- Replace with actual URL -->
+- Assignment 1: Idea Pitch: [**EscapeBook_Idea_Pitch.pdf**](https://github.com/maritapodrug/korisnicka_sucelja/blob/main/EscapeBook_Idea_Pitch.pdf), Video Pitch: [**IdeaPitch.mp4**](https://github.com/maritapodrug/korisnicka_sucelja/blob/main/IdeaPitch.mp4)  <!-- Replace with actual URL -->
 - Link to Assignment 2:  <!-- Replace with actual URL -->
 - Link to Assignment 3:  <!-- Replace with actual URL -->
 <!-- Add more assignments as necessary -->
