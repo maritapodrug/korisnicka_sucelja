@@ -18,7 +18,7 @@
 
 ### Semester Assignments
 
-- Assignment 1: Idea Pitch: [**EscapeBook_Idea_Pitch.docx**](), Video Pitch: [**IdeaPitch.mp4**]()  <!-- Replace with actual URL -->
+- Assignment 1: Idea Pitch: [**EscapeBook_Idea_Pitch.pdf**](), Video Pitch: [**IdeaPitch.mp4**]()  <!-- Replace with actual URL -->
 - Link to Assignment 2:  <!-- Replace with actual URL -->
 - Link to Assignment 3:  <!-- Replace with actual URL -->
 <!-- Add more assignments as necessary -->
