@@ -20,7 +20,7 @@
 
 - Assignment 1: Idea Pitch: [**EscapeRoom_Idea_Pitch.pdf**](https://github.com/maritapodrug/korisnicka_sucelja/blob/main/EscapeRoom_Idea_Pitch.pdf), Video Pitch: [**IdeaPitch.mp4**](https://github.com/maritapodrug/korisnicka_sucelja/blob/main/IdeaPitch.mp4)  <!-- Replace with actual URL -->
 - Link to Assignment 2:  [**UserPersonas.pdf**](https://github.com/maritapodrug/korisnicka_sucelja/blob/main/UserPersonas.pdf)
-- Link to Assignment 3:  <!-- Replace with actual URL -->
+- Link to Assignment 3:  [**EscapeRoom**](https://github.com/maritapodrug/korisnicka_sucelja/blob/main/escaperoom)
 <!-- Add more assignments as necessary -->
 
 ## Project Requirements
