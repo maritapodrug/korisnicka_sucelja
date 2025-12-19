@@ -8,12 +8,6 @@ type Page = {
   path: `/${string}`;
 };
 
-/**
- * pages is an array of objects representing the pages in the web app.
- * Each object contains a title and a path. This array is used to generate the navigation menu.
- *
- * We hardcode pages here, but in real app you want to store and read this information from some external source (e.g. CMS, DB, config file, etc).
- */
 const pages: Page[] = [
   { title: "Home", path: "/" },
   {
@@ -42,31 +36,39 @@ const pages: Page[] = [
   },
 ];
 
-/**
- * Render a page list item.
- * @param page - { title, path } for the page
- * @param index - array index used for key
- * @returns JSX element for a list item
- */
 function processPage(page: Page, index: number, currentPath?: string) {
+  const isActive = currentPath === page.path;
+
   return (
     <li key={index}>
       <Link
         href={page.path}
-        className={currentPath === page.path ? "font-extrabold" : ""}
+        className={`
+          px-4 py-2
+          rounded-full
+          text-lg
+          transition-all duration-200
+          ${
+            isActive
+              ? "font-extrabold text-black"
+              : "text-gray-700 hover:bg-gray-200 hover:font-extrabold hover:shadow-sm"
+          }
+        `}
       >
         {page.title}
       </Link>
     </li>
   );
 }
-
 export function Navigation() {
   const currentPath = usePathname();
+
   return (
-    <nav>
-      <ul className="flex space-x-4 mb-4">
-        {pages.map((page, index) => processPage(page, index, currentPath))}
+    <nav className="max-w-4xl mx-auto">
+      <ul className="flex justify-center space-x-4 mb-4">
+        {pages.map((page, index) =>
+          processPage(page, index, currentPath)
+        )}
       </ul>
     </nav>
   );
