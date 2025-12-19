@@ -15,10 +15,6 @@ export interface BlogPostProps {
   body: string;
 }
 
-export const metadata: Metadata = {
-  title: "Blog",
-};
-
 const PAGE_SIZE = 6;
 export const BASE_API_URL = "https://jsonplaceholder.typicode.com";
 
