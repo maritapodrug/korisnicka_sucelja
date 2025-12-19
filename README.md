@@ -22,6 +22,7 @@
 - Link to Assignment 2:  [**UserPersonas.pdf**](https://github.com/maritapodrug/korisnicka_sucelja/blob/main/UserPersonas.pdf)
 - Link to Assignment 3:  [**EscapeRoom**](https://github.com/maritapodrug/korisnicka_sucelja/blob/main/escaperoom), [**Link to page**](https://korisnicka-sucelja-theta.vercel.app/)
 - Link to Assignment 4:  [**High-fidelity prototype**](https://github.com/maritapodrug/korisnicka_sucelja/blob/main/figma-prototype)
+- Link to Assignment 5:  [**Dynamic routes, data fetching**](https://github.com/maritapodrug/korisnicka_sucelja/blob/main/escaperoom), [**Link to page**](https://korisnicka-sucelja-theta.vercel.app/)
 
 <!-- Add more assignments as necessary -->
 
