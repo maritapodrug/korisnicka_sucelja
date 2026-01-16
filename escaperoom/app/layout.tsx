@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Navigation } from "./_components/navigation";
-import { Footer } from "./_components/footer"
+import { Footer } from "./_components/footer";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
+
 export const metadata: Metadata = {
   title: "EscapeRoom",
   description: "Enter the unknown",
@@ -15,9 +17,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-[#0b0214] text-white antialiased">
-        <Navigation />
-        {children}
-        <Footer />
+        <NuqsAdapter>
+          <Navigation />
+          {children}
+          <Footer />
+        </NuqsAdapter>
       </body>
     </html>
   );

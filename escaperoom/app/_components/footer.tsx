@@ -14,16 +14,6 @@ export function Footer() {
           </div>
 
           <div className="flex gap-4">
-            {["facebook", "instagram", "twitter"].map(icon => (
-              <Image
-                key={icon}
-                src={`/icons/${icon}.png`}
-                alt={icon}
-                width={18}
-                height={18}
-                className="invert opacity-60 hover:opacity-100 transition"
-              />
-            ))}
           </div>
         </div>
 
