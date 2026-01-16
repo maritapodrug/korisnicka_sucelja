@@ -1,20 +1,7 @@
 import type { Metadata } from "next";
-import { NuqsAdapter } from "nuqs/adapters/next/app";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Navigation } from "./_components/navigation";
-
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
+import { Footer } from "./_components/footer"
 export const metadata: Metadata = {
   title: "EscapeRoom",
   description: "Enter the unknown",
@@ -22,17 +9,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <main className="h-20">
-          <NuqsAdapter>{children}</NuqsAdapter>
-        </main>
+      <body className="bg-[#0b0214] text-white antialiased">
+        <Navigation />
+        {children}
+        <Footer />
       </body>
     </html>
   );
