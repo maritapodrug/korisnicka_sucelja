@@ -4,21 +4,21 @@ import Link from "next/link"
 export function Footer() {
   return (
     <footer className="bg-gradient-to-t from-[#0d0015] to-[#160021] border-t border-white/10">
-      <div className="max-w-7xl mx-auto px-10 py-16 grid grid-cols-1 md:grid-cols-3 gap-12">
+      <div className="max-w-7xl mx-auto px-10 py-16 grid grid-cols-1 md:grid-cols-3 gap-12 text-center md:text-left">
 
         {/* BRAND */}
-        <div className="space-y-4">
-          <div className="flex items-center gap-3">
-            <Image src="/logo.png" alt="Escape Room" width={80} height={80} />
+        <div className="space-y-4 flex flex-col items-center md:items-start">
+          <div className="flex items-center gap-3 justify-center md:justify-start">
+            <Image src="/logo.png" alt="Escape Room" width={120} height={120} />
             
           </div>
 
-          <div className="flex gap-4">
+          <div className="flex gap-4 justify-center md:justify-start">
           </div>
         </div>
 
         {/* QUICK LINKS */}
-        <div>
+        <div className="flex flex-col items-center md:items-start">
           <h4 className="text-white tracking-widest text-xs mb-4">
             QUICK LINKS
           </h4>
@@ -31,7 +31,7 @@ export function Footer() {
         </div>
 
         {/* CONTACT */}
-        <div>
+        <div className="flex flex-col items-center md:items-start">
           <h4 className="text-white tracking-widest text-xs mb-4">
             CONTACT
           </h4>

@@ -100,7 +100,7 @@ export default function Page() {
             ENTER THE<br />UNKNOWN
           </h1>
 
-          <p className="text-gray-300 mb-12 max-w-xl mx-auto">
+          <p className="text-xl md:text-xl text-white mb-12 max-w-2xl mx-auto leading-relaxed">
             Can you escape in time?<br />
             Each room is a world of mystery, logic and adrenaline.
           </p>
@@ -112,7 +112,7 @@ export default function Page() {
           </button>
           </Link>
           <Link href="/rooms">
-          <button className="px-10 py-4 border border-white/30 rounded-lg hover:bg-white/10">
+          <button className="px-10 py-4 bg-white/40 font-semibold border-white/30 rounded-lg hover:bg-purple-700/50">
               VIEW ROOMS
           </button>
           </Link>
@@ -218,8 +218,8 @@ export default function Page() {
       </section>
 
 
-
-    <section className="relative py-32 bg-gradient-to-b from-[var(--color-brand-text-strong)] to-black">
+    {/* TESTIMONIALS */}
+    <section className="relative py-32 bg-[rgba(202,126,246,0.15)]">
 
       <h2 className="text-center text-4xl tracking-[0.3em] font-bold mb-20">
         WHAT ESCAPERS SAY
@@ -229,23 +229,22 @@ export default function Page() {
 
         {testimonials.map((t,i) => (
           <div
-            key={i}
-            className="relative glass p-10 rounded-2xl shadow-xl hover:-translate-y-3 transition duration-500 group"
-          >
-            {/* glow */}
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition bg-[var(--color-brand)]/10 blur-2xl" />
+          key={i}
+          className="relative p-10 rounded-2xl shadow-xl hover:-translate-y-3 transition duration-500
+            bg-[#13021d]
+             backdrop-blur-md
+             border border-white/10">
 
-      
             {/* stars */}
-            <div className="text-[var(--color-brand)] mb-4 tracking-widest">
+            <div className="text-[#ca7ef6] mb-4 tracking-widest">
               ★★★★★
             </div>
 
-            <p className="italic text-gray-300 mb-6 leading-relaxed">
+            <p className="italic text-[rgba(255, 255, 255, 0.8)] mb-6 leading-relaxed">
               “{t.text}”
             </p>
 
-            <span className="text-[var(--color-brand)] font-semibold text-sm">
+            <span className="text-[#ca7ef6] font-semibold text-sm">
               {t.name}
             </span>
           </div>
@@ -254,80 +253,81 @@ export default function Page() {
     </section>
 
 
+
     
-    <section className="relative py-32 bg-[#05000a]">
+        <section className="relative py-32 bg-[#05000a]">
 
-  <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,var(--color-brand)/10,transparent_70%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,var(--color-brand)/10,transparent_70%)]" />
 
-  <h2 className="text-center text-4xl tracking-[0.3em] font-bold mb-20">
-    VISIT US
-  </h2>
+        <h2 className="text-center text-4xl tracking-[0.3em] font-bold mb-20">
+          VISIT US
+        </h2>
 
-  <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 px-8 relative z-10">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 px-8 relative z-10">
 
-    {/* LEFT – Contact Info */}
-    <div className="space-y-14">
+          {/* LEFT – Contact Info */}
+          <div className="space-y-14">
 
-      {/* Address */}
-      <div className="flex gap-6 items-start">
-        <div className="w-auto h-auto rounded-xl bg-[var(--color-brand)]/10 flex items-center justify-center">
-          <Image src="/icons/location.png" alt="" width={24} height={24} />
+            {/* Address */}
+            <div className="flex gap-6 items-start">
+              <div className="w-auto h-auto rounded-xl bg-[var(--color-brand)]/10 flex items-center justify-center">
+                <Image src="/icons/location.png" alt="" width={24} height={24} />
+              </div>
+
+              <div>
+                <p className="uppercase tracking-widest text-xs text-[var(--color-brand)] mb-2">
+                  Visit Us
+                </p>
+                <p className="text-lg font-semibold">Ulica Slobode 14</p>
+                <p className="text-gray-400">Split, Croatia</p>
+              </div>
+            </div>
+
+            {/* Phone */}
+            <div className="flex gap-6 items-start">
+              <div className="w-auto h-auto rounded-xl bg-[var(--color-brand)]/10 flex items-center justify-center">
+                <Image src="/icons/phone.png" alt="" width={24} height={24} />
+              </div>
+
+              <div>
+                <p className="uppercase tracking-widest text-xs text-[var(--color-brand)] mb-2">
+                  Give Us A Call
+                </p>
+                <p className="text-lg font-semibold">(+385) 11 223 344</p>
+              </div>
+            </div>
+
+            {/* Hours */}
+            <div className="flex gap-6 items-start">
+              <div className="w-auto h-auto rounded-xl bg-[var(--color-brand)]/10 flex items-center justify-center">
+                <Image src="/icons/clock.png" alt="" width={24} height={24} />
+              </div>
+
+              <div>
+                <p className="uppercase tracking-widest text-xs text-[var(--color-brand)] mb-2">
+                  Open Hours
+                </p>
+                <p className="text-lg font-semibold">9:00am – 11:00pm</p>
+                <p className="text-gray-400">Every day</p>
+              </div>
+            </div>
+
+          </div>
+
+          {/* RIGHT – Google Map */}
+          <div className="relative h-[480px] rounded-2xl overflow-hidden glass shadow-xl">
+            <iframe
+              className="absolute inset-0 w-full h-full border-0"
+              loading="lazy"
+              allowFullScreen
+              referrerPolicy="no-referrer-when-downgrade"
+              src="https://www.google.com/maps?q=Ulica%20Slobode%2014%20Split&output=embed"
+            />
+            <div className="absolute inset-0 bg-black/20 pointer-events-none" />
+          </div>
+
         </div>
-
-        <div>
-          <p className="uppercase tracking-widest text-xs text-[var(--color-brand)] mb-2">
-            Visit Us
-          </p>
-          <p className="text-lg font-semibold">Ulica Slobode 14</p>
-          <p className="text-gray-400">Split, Croatia</p>
-        </div>
-      </div>
-
-      {/* Phone */}
-      <div className="flex gap-6 items-start">
-        <div className="w-auto h-auto rounded-xl bg-[var(--color-brand)]/10 flex items-center justify-center">
-          <Image src="/icons/phone.png" alt="" width={24} height={24} />
-        </div>
-
-        <div>
-          <p className="uppercase tracking-widest text-xs text-[var(--color-brand)] mb-2">
-            Give Us A Call
-          </p>
-          <p className="text-lg font-semibold">(+385) 11 223 344</p>
-        </div>
-      </div>
-
-      {/* Hours */}
-      <div className="flex gap-6 items-start">
-        <div className="w-auto h-auto rounded-xl bg-[var(--color-brand)]/10 flex items-center justify-center">
-          <Image src="/icons/clock.png" alt="" width={24} height={24} />
-        </div>
-
-        <div>
-          <p className="uppercase tracking-widest text-xs text-[var(--color-brand)] mb-2">
-            Open Hours
-          </p>
-          <p className="text-lg font-semibold">9:00am – 11:00pm</p>
-          <p className="text-gray-400">Every day</p>
-        </div>
-      </div>
-
-    </div>
-
-    {/* RIGHT – Google Map */}
-    <div className="relative h-[480px] rounded-2xl overflow-hidden glass shadow-xl">
-      <iframe
-        className="absolute inset-0 w-full h-full border-0"
-        loading="lazy"
-        allowFullScreen
-        referrerPolicy="no-referrer-when-downgrade"
-        src="https://www.google.com/maps?q=Ulica%20Slobode%2014%20Split&output=embed"
-      />
-      <div className="absolute inset-0 bg-black/20 pointer-events-none" />
-    </div>
-
-  </div>
-</section>
+      </section>
 
     </main>
   );
