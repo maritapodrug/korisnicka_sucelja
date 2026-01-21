@@ -4,9 +4,9 @@ import Link from "next/link"
 import Image from "next/image"
 
 const slides = [
-  "/hero/picture1.jpg",
+  "/hero/picture1.png",
   "/hero/picture2.jpg",
-  "/hero/picture31.png"
+  "/hero/picture3.png"
 ]
 const rooms = [
   {
@@ -142,6 +142,7 @@ export default function Page() {
               src={room.img}
               alt={room.title}
               fill
+              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
               className="object-cover"
               quality={100}
             />
@@ -269,7 +270,7 @@ export default function Page() {
 
       {/* Address */}
       <div className="flex gap-6 items-start">
-        <div className="w-12 h-12 rounded-xl bg-[var(--color-brand)]/10 flex items-center justify-center">
+        <div className="w-auto h-auto rounded-xl bg-[var(--color-brand)]/10 flex items-center justify-center">
           <Image src="/icons/location.png" alt="" width={24} height={24} />
         </div>
 
@@ -284,7 +285,7 @@ export default function Page() {
 
       {/* Phone */}
       <div className="flex gap-6 items-start">
-        <div className="w-12 h-12 rounded-xl bg-[var(--color-brand)]/10 flex items-center justify-center">
+        <div className="w-auto h-auto rounded-xl bg-[var(--color-brand)]/10 flex items-center justify-center">
           <Image src="/icons/phone.png" alt="" width={24} height={24} />
         </div>
 
@@ -298,7 +299,7 @@ export default function Page() {
 
       {/* Hours */}
       <div className="flex gap-6 items-start">
-        <div className="w-12 h-12 rounded-xl bg-[var(--color-brand)]/10 flex items-center justify-center">
+        <div className="w-auto h-auto rounded-xl bg-[var(--color-brand)]/10 flex items-center justify-center">
           <Image src="/icons/clock.png" alt="" width={24} height={24} />
         </div>
 

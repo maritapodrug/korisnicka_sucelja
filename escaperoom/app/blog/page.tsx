@@ -61,24 +61,30 @@ function processPost(post: BlogPostProps, userName?: string) {
     <li key={post.id} className="list-none">
       <Link
         href={`/blog/${post.id}`}
-        className="group block bg-white hover:shadow-lg border-1 border-gray-300 hover:border-gray-400 rounded-lg p-5 transition-all duration-200"
-      >
+          className="
+            group block glass rounded-2xl p-6
+            border border-white/10
+            hover:-translate-y-1 hover:shadow-xl
+            hover:shadow-purple-900/30
+            transition-all duration-300
+                "
+              >
         <div className="flex items-center gap-4">
           {/* Icon placeholder */}
           <div className="flex-shrink-0 w-10 h-10 rounded bg-gray-200 border border-gray-300"></div>
 
           {/* Content */}
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold capitalize text-lg text-gray-900 mb-0.5">
+            <h3 className="font-bold tracking-wide text-lg text-white mb-1">
               {post.title}
             </h3>
-            <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-400">
               Post #{post.id} by {userName || `User ${post.userId}`}
             </p>
           </div>
 
           {/* Arrow */}
-          <ArrowRight className="mr-2 h-4 w-4 text-gray-600 group-hover:text-gray-900 transition-colors duration-200" />
+        <ArrowRight className="text-purple-400 group-hover:translate-x-1 transition" />
         </div>
       </Link>
     </li>
@@ -114,16 +120,19 @@ export default async function Page({ searchParams }: BlogPageSearchParams) {
   const userMap = new Map(users.map((user) => [user.id, user.name]));
 
   return (
-    <main>
+  <main className="pt-20 bg-gradient-to-b from-[#120018] to-[#05000a] min-h-screen">
       <Navigation />
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12">
-            <h1 className="text-6xl font-extrabold tracking-tight mb-4">
-              Blog
+            <h1 className="text-5xl md:text-6xl font-extrabold tracking-[0.3em] mb-6">
+              BLOG
             </h1>
-            <p className="text-gray-600 text-lg">Explore posts below</p>
+          <p className="text-gray-400 max-w-xl mx-auto">
+                Stories, updates and behind-the-scenes from our escape rooms
+          </p>
+
           </div>
           {/* Filters */}
           <BlogFilters users={users} currentUserId={userId} />
@@ -134,9 +143,9 @@ export default async function Page({ searchParams }: BlogPageSearchParams) {
             </ul>
           </div>
           {/* Pagination */}
-          <div className="flex justify-center mt-8">
-            <Pagination currentPage={page} totalPages={totalPages} />
-          </div>
+     <div className="flex justify-center mt-8">
+      <Pagination currentPage={page} totalPages={totalPages} />
+      </div>
         </div>
       </div>
     </main>

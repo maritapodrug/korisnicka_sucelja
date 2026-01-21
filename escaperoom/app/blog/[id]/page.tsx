@@ -19,7 +19,7 @@ async function fetchPost(id: string): Promise<Post> {
 
 function PostSkeleton() {
   return (
-    <article className="w-3xl bg-white shadow-lg rounded-lg overflow-hidden p-6 animate-pulse">
+    <article className="w-3xl bg-transparent shadow-lg rounded-lg overflow-hidden p-6 animate-pulse">
       {/* Back link skeleton */}
       <Link
         href="/blog"
@@ -42,14 +42,14 @@ async function PostContent({ id }: { id: string }) {
   const post = await fetchPost(id);
   const { title, body } = post;
   return (
-    <article className="max-w-3xl bg-white shadow-lg rounded-lg overflow-hidden p-6">
+    <article className="max-w-3xl bg-transparent shadow-lg rounded-lg overflow-hidden p-6">
       <Link
         href="/blog"
         className="inline-flex items-center text-gray-600 hover:text-gray-900 transition-colors duration-200 mb-6"
       >
         <ArrowLeft className="mr-2 h-4 w-4" /> Back to all posts
       </Link>
-      <h1 className="text-3xl md:text-4xl capitalize font-extrabold tracking-tight text-gray-900 mb-4">
+      <h1 className="text-3xl md:text-4xl capitalize font-extrabold tracking-tight mb-4">
         {title}
       </h1>
       <p>{body}</p>
@@ -60,7 +60,7 @@ async function PostContent({ id }: { id: string }) {
 export default async function BlogPost({ params }: BlogPostProps) {
   const { id } = await params;
   return (
-    <main className="flex flex-col items-center p-10">
+    <main className="flex flex-col items-center p-20">
       <Navigation/>
       <Suspense fallback={<PostSkeleton />}>
         <PostContent id={id} />
