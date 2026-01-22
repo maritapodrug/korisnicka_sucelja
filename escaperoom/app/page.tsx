@@ -95,16 +95,37 @@ export default function Page() {
         <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-purple-600/20 blur-[120px]" />
 
         {/* Content */}
-        <div className="relative z-10 text-center max-w-4xl px-8">
-          <h1 className="text-[72px] leading-[1] font-extrabold tracking-[0.3em] mb-8">
-            ENTER THE<br />UNKNOWN
-          </h1>
+       {/* Content */}
+<div className="relative z-10 text-center max-w-4xl px-6 sm:px-8">
+  <h1 className="
+    text-4xl
+    sm:text-5xl
+    md:text-6xl
+    lg:text-[72px]
+    leading-tight
+    font-extrabold
+    tracking-widest
+    sm:tracking-[0.25em]
+    mb-6
+    sm:mb-8
+  ">
+    ENTER THE<br />UNKNOWN
+  </h1>
 
-          <p className="text-xl md:text-xl text-white mb-12 max-w-2xl mx-auto leading-relaxed">
-            Can you escape in time?<br />
-            Each room is a world of mystery, logic and adrenaline.
-          </p>
-
+          <p className="
+    text-lg
+    sm:text-xl
+    md:text-xl
+    text-white
+    mb-10
+    sm:mb-12
+    max-w-2xl
+    mx-auto
+    leading-relaxed
+  ">
+    Can you escape in time?<br />
+    Each room is a world of mystery, logic and adrenaline.
+  </p>
         <div className="flex justify-center gap-6">
           <Link href="/booknow">
           <button className="px-10 py-4 bg-purple-600 hover:bg-purple-700 rounded-lg font-semibold shadow-lg shadow-purple-600/40">
