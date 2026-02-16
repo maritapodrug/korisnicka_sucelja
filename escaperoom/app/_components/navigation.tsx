@@ -48,22 +48,25 @@ export function Navigation() {
             hidden md:flex
             absolute left-1/2 -translate-x-1/2
             gap-12 text-xs tracking-[0.25em]
+            h-full
           "
           >
             {links.map(link => {
               const active = pathname === link.href
 
               return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`
-                    relative pb-2 transition-colors duration-200
-                    ${active
-                      ? "text-white"
-                      : "text-white/70 hover:text-white"}
-                  `}
-                >
+                      <Link
+              key={link.href}
+              href={link.href}
+              className={`
+                  relative h-full flex items-center
+                  px-4 whitespace-nowrap
+                  text-white/70 hover:text-white
+                  hover:bg-white/10
+                  transition-all duration-300
+                  ${active && "text-white"}
+                `}
+            >
                   {link.name}
 
                   {active && (
@@ -80,27 +83,7 @@ export function Navigation() {
           {/* RIGHT SIDE */}
           <div className="flex items-center gap-4">
 
-            {/* DESKTOP ICONS */}
-            <div className="hidden md:flex items-center gap-4">
-              {[ "facebook1", "instagram1"].map(icon => (
-                <button
-                  key={icon}
-                  className="
-                    w-9 h-9 flex items-center justify-center
-                    rounded-full border border-white/20
-                    hover:border-[#ca7ef6] transition
-                  "
-                >
-                  <Image
-                    src={`/icons/${icon}.png`}
-                    alt={icon}
-                    width={16}
-                    height={16}
-                    className="invert opacity-80"
-                  />
-                </button>
-              ))}
-            </div>
+ 
 
             {/* HAMBURGER – MOBILE ONLY */}
             <button
@@ -129,18 +112,22 @@ export function Navigation() {
         "
         >
           {links.map(link => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setMenuOpen(false)}
-              className="
-                text-xl tracking-[0.3em]
-                hover:text-[#ca7ef6]
-                transition
-              "
-            >
-              {link.name}
-            </Link>
+                    <Link
+          key={link.href}
+          href={link.href}
+          onClick={() => setMenuOpen(false)}
+          className="
+            w-full py-6
+            text-xl tracking-[0.3em]
+            text-white
+            flex items-center justify-center
+            transition-all duration-300
+            hover:bg-white/10
+            hover:text-[#ca7ef6]
+          "
+        >
+          {link.name}
+        </Link>
           ))}
 
           {/* CLOSE */}
