@@ -92,7 +92,7 @@ export default function BookingClient() {
 
       {/* Final selection */}
       {selectedSlot && (
-        <div className="text-sm tracking-widest text-green-400 animate-fadeIn">
+        <div className="text-sm tracking-widest text-yellow-400 animate-fadeIn">
           Selected slot: {selectedSlot}
         </div>
       )}
