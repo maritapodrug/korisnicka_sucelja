@@ -167,7 +167,9 @@ export function Navigation() {
           {user ? (
             <div className="flex flex-col items-center gap-4">
               <button
-                onClick={() => router.push("/account")}
+                onClick={() =>{ router.push("/account")
+                                setMenuOpen(false)
+                }}
                 className="
                 w-16 h-16 rounded-full bg-purple-600 text-white
                 flex items-center justify-center font-semibold text-lg uppercase
