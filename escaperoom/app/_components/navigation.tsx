@@ -12,11 +12,12 @@ export function Navigation() {
   const router = useRouter()
   const [menuOpen, setMenuOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [activeSection, setActiveSection] = useState<string>("HOME")
   const user = useUser()
 
   const links = [
     { name: "HOME", href: "/" },
-    { name: "ROOMS", href: "/rooms" },
+    { name: "ROOMS", href: "/#rooms" },
     { name: "BLOG", href: "/blog" },
     { name: "BOOK NOW", href: "/booknow" },
     { name: "CONTACT US", href: "/contact" },
@@ -46,6 +47,39 @@ export function Navigation() {
     return () => document.removeEventListener("click", handleClickOutside)
   }, [])
 
+  // smooth scroll na odjeljak rooms
+  function scrollToRooms() {
+    const el = document.getElementById("rooms")
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" })
+    } else {
+      router.push("/#rooms")
+    }
+  }
+
+  // scroll-aware active link
+useEffect(() => {
+  function handleScroll() {
+    if (typeof window === "undefined") return
+    const roomsEl = document.getElementById("rooms")
+    if (!roomsEl) return
+
+    const top = roomsEl.getBoundingClientRect().top
+    const bottom = top + roomsEl.offsetHeight
+
+    if (top <= 120 && bottom > 120) {
+      setActiveSection("ROOMS") // unutar rooms sekcije
+    } else {
+      setActiveSection("HOME") // iznad ili ispod rooms
+    }
+  }
+
+  window.addEventListener("scroll", handleScroll)
+  handleScroll() // odmah postavi stanje
+  return () => window.removeEventListener("scroll", handleScroll)
+}, [])
+
+
   return (
     <>
       {/* HEADER */}
@@ -59,11 +93,19 @@ export function Navigation() {
           {/* DESKTOP NAV */}
           <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 gap-12 text-xs tracking-[0.25em] h-full">
             {links.map(link => {
-              const active = pathname === link.href
+              const isRooms = link.name === "ROOMS"
+              const active = link.name === activeSection
+
               return (
                 <Link
                   key={link.href}
                   href={link.href}
+                  onClick={(e) => {
+                    if (isRooms) {
+                      e.preventDefault()
+                      scrollToRooms()
+                    }
+                  }}
                   className={`relative h-full flex items-center px-4 whitespace-nowrap text-white/70 hover:text-white hover:bg-white/10 transition-all duration-300 ${active && "text-white"}`}
                 >
                   {link.name}
@@ -79,45 +121,44 @@ export function Navigation() {
           <div className="flex items-center gap-4">
             {/* AUTH AREA */}
             {user ? (
-  <div id="avatar-dropdown" className="relative hidden md:flex items-center gap-3">
-    {/* Avatar circle */}
-    <button
-      onClick={() => setDropdownOpen(prev => !prev)}
-      className="
-        w-10 h-10 rounded-full bg-purple-600 text-white
-        flex items-center justify-center font-semibold text-sm uppercase
-        transition-transform duration-200 ease-in-out
-        hover:scale-110 hover:shadow-lg cursor-pointer
-      "
-    >
-      {getInitials(user.email!)}
-    </button>
+              <div id="avatar-dropdown" className="relative hidden md:flex items-center gap-3">
+                {/* Avatar circle */}
+                <button
+                  onClick={() => setDropdownOpen(prev => !prev)}
+                  className="
+                    w-10 h-10 rounded-full bg-purple-600 text-white
+                    flex items-center justify-center font-semibold text-sm uppercase
+                    transition-transform duration-200 ease-in-out
+                    hover:scale-110 hover:shadow-lg cursor-pointer
+                  "
+                >
+                  {getInitials(user.email!)}
+                </button>
 
-    {/* Dropdown menu */}
-    {dropdownOpen && (
-      <div className="absolute top-full mt-2 right-0 w-40 bg-[#1a0d2a] rounded-lg shadow-lg flex flex-col border border-white/10 overflow-hidden z-50">
-        <button
-          onClick={() => {
-            router.push("/account")
-            setDropdownOpen(false)
-          }}
-          className="w-full text-left px-4 py-2 text-white/80 hover:bg-white/10 hover:text-white transition cursor-pointer"
-        >
-          Account
-        </button>
-        <button
-          onClick={() => {
-            logout()
-            setDropdownOpen(false)
-          }}
-          className="w-full text-left px-4 py-2 text-red-400 hover:bg-white/10 hover:text-red-300 transition cursor-pointer"
-        >
-          Logout
-        </button>
-      </div>
-    )}
-  </div>
-
+                {/* Dropdown menu */}
+                {dropdownOpen && (
+                  <div className="absolute top-full mt-2 right-0 w-40 bg-[#1a0d2a] rounded-lg shadow-lg flex flex-col border border-white/10 overflow-hidden z-50">
+                    <button
+                      onClick={() => {
+                        router.push("/account")
+                        setDropdownOpen(false)
+                      }}
+                      className="w-full text-left px-4 py-2 text-white/80 hover:bg-white/10 hover:text-white transition cursor-pointer"
+                    >
+                      Account
+                    </button>
+                    <button
+                      onClick={() => {
+                        logout()
+                        setDropdownOpen(false)
+                      }}
+                      className="w-full text-left px-4 py-2 text-red-400 hover:bg-white/10 hover:text-red-300 transition cursor-pointer"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
             ) : (
               <div className="hidden md:flex items-center gap-3 text-xs tracking-widest">
                 {/* LOGIN */}
@@ -152,31 +193,43 @@ export function Navigation() {
       {/* MOBILE MENU */}
       {menuOpen && (
         <div className="fixed inset-0 z-[999] bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center text-center gap-10">
-          {links.map(link => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setMenuOpen(false)}
-              className="w-full py-6 text-xl tracking-[0.3em] text-white flex items-center justify-center transition-all duration-300 hover:bg-white/10 hover:text-[#ca7ef6]"
-            >
-              {link.name}
-            </Link>
-          ))}
+          {links.map(link => {
+            const isRooms = link.name === "ROOMS"
+            const isActive = link.name === activeSection
+
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={(e) => {
+                  setMenuOpen(false)
+                  if (isRooms) {
+                    e.preventDefault()
+                    setTimeout(() => scrollToRooms(), 50)
+                  }
+                }}
+                className={`w-full py-6 text-xl tracking-[0.3em] text-white flex items-center justify-center transition-all duration-300 hover:bg-white/10 hover:text-[#ca7ef6] ${isActive && "text-[#ca7ef6]"}`}
+              >
+                {link.name}
+              </Link>
+            )
+          })}
 
           {/* MOBILE AUTH */}
           {user ? (
             <div className="flex flex-col items-center gap-4">
               <button
-                onClick={() =>{ router.push("/account")
-                                setMenuOpen(false)
+                onClick={() => {
+                  router.push("/account")
+                  setMenuOpen(false)
                 }}
                 className="
-                w-16 h-16 rounded-full bg-purple-600 text-white
-                flex items-center justify-center font-semibold text-lg uppercase
-                transition-transform duration-200 ease-in-out
-                hover:scale-110 hover:shadow-lg
-              "
-            >
+                  w-16 h-16 rounded-full bg-purple-600 text-white
+                  flex items-center justify-center font-semibold text-lg uppercase
+                  transition-transform duration-200 ease-in-out
+                  hover:scale-110 hover:shadow-lg
+                "
+              >
                 {getInitials(user.email!)}
               </button>
 
@@ -198,7 +251,6 @@ export function Navigation() {
               >
                 Logout
               </button>
-
             </div>
           ) : (
             <div className="flex flex-col gap-4 w-full px-10">

@@ -35,16 +35,29 @@ export default function BookingClient() {
 
   const [date, setDate] = useState<Date | null>(null)
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null)
+  const [bookings, setBookings] = useState<any[]>([])
 
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState("")
 
   const rooms = date ? getRoomsForDate(date) : []
 
-  // BOOKING FUNKCIJA
+  // 🔹 DOHVAT BOOKINGA ZA DATUM
+  async function fetchBookings(selectedDate: Date) {
+    const { data, error } = await supabase
+      .from("bookings")
+      .select("*")
+      .eq("date", selectedDate.toISOString().split("T")[0])
+
+    if (!error && data) {
+      setBookings(data)
+    }
+  }
+
+  // 🔹 BOOKING FUNKCIJA
   async function bookSlot() {
     if (!user) {
-      setMessage("Moraš biti prijavljen.")
+      setMessage("You have to have an account in order to book!")
       return
     }
 
@@ -67,10 +80,11 @@ export default function BookingClient() {
     if (error) {
       setMessage("There is an error with this reservation.")
     } else {
-      setMessage("Your reservation is succesful! 🎉")
-
-      // reset selection
+      setMessage("Your reservation is successful! 🎉")
       setSelectedSlot(null)
+
+      // 🔄 refresh booking liste
+      fetchBookings(date)
     }
   }
 
@@ -82,6 +96,7 @@ export default function BookingClient() {
           setDate(d)
           setSelectedSlot(null)
           setMessage("")
+          fetchBookings(d)
         }}
       />
 
@@ -105,19 +120,38 @@ export default function BookingClient() {
               <div className="flex flex-wrap gap-2">
                 {room.times.map((time) => {
                   const value = `${room.name}-${time}`
+
+                  // 🔎 postoji li booking za taj termin
+                  const existingBooking = bookings.find(
+                    (b) => b.room === room.name && b.time === time
+                  )
+
+                  const isMine =
+                    existingBooking && existingBooking.user_id === user?.id
+
+                  const isTaken =
+                    existingBooking && existingBooking.user_id !== user?.id
+
                   const active = selectedSlot === value
 
                   return (
                     <button
                       key={time}
+                      disabled={isMine || isTaken}
                       onClick={() => {
-                        setSelectedSlot(value)
-                        setMessage("")
+                        if (!isMine && !isTaken) {
+                          setSelectedSlot(value)
+                          setMessage("")
+                        }
                       }}
                       className={`
                         px-4 py-2 rounded-lg text-sm transition
                         ${
-                          active
+                          isMine
+                            ? "bg-purple-700 text-white cursor-not-allowed"
+                            : isTaken
+                            ? "bg-gray-700 text-gray-400 cursor-not-allowed"
+                            : active
                             ? "bg-purple-600 text-white"
                             : "bg-white/5 hover:bg-purple-600/20"
                         }

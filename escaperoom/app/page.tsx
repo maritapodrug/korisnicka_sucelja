@@ -142,7 +142,7 @@ export default function Page() {
     </section>
 
     {/* FEATURED ROOMS */}
-    <section className="relative py-32 bg-gradient-to-b from-[#120018] to-[#05000a]">
+    <section id="rooms" className="relative py-32 bg-gradient-to-b from-[#120018] to-[#05000a]">
 
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,#3b0a5f30,transparent_60%)]" />
         <h2 className="text-center text-4xl tracking-widest font-bold mb-4">
