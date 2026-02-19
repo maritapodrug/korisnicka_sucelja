@@ -2,31 +2,13 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
+import { rooms } from "../lib/roomData"
+
 
 const slides = [
   "/hero/picture1.png",
   "/hero/picture2.jpg",
   "/hero/picture3.png"
-]
-const rooms = [
-  {
-    id: "time-machine",
-    title: "CHRONOCRASH: THE TIME RIFT",
-    description: "Trapped in a broken time machine, you're jumping through timelines. Fix the machine — or be erased from history.",
-    img: "/rooms/room11.jpg"
-  },
-  {
-    id: "the-heist",
-    title: "THE MASTERPIECE HEIST",
-    description: "Infiltrate the city's most secure museum and steal a priceless painting. The plan was perfect — until the alarms went off. The clock is ticking.",
-    img: "/rooms/room22.jpg"
-  },
-  {
-    id: "pharaohs-curse",
-    title: "CURSE OF THE PHARAOH",
-    description: "You've entered a long-lost pharaoh's tomb, but the door has sealed behind you. Solve ancient puzzles and escape the curse — or be buried forever.",
-    img: "/rooms/room3.jpg"
-  }
 ]
 
 const steps = [
@@ -64,6 +46,7 @@ const testimonials = [
 
 export default function Page() {
   const [index, setIndex] = useState(0)
+  const [selectedRoom, setSelectedRoom] = useState<string | null>(null)
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -72,6 +55,8 @@ export default function Page() {
 
     return () => clearInterval(timer)
   }, [])
+
+  const room = rooms.find(r => r.id === selectedRoom)
 
   return (
     <main className="flex flex-col">
@@ -143,53 +128,30 @@ export default function Page() {
 
     {/* FEATURED ROOMS */}
     <section id="rooms" className="relative py-32 bg-gradient-to-b from-[#120018] to-[#05000a]">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,#3b0a5f30,transparent_60%)]" />
+        <h2 className="text-center text-4xl tracking-widest font-bold mb-4">FEATURED ROOMS</h2>
+        <p className="text-center text-gray-400 mb-20">Test your mind. Discover your limits.</p>
 
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,#3b0a5f30,transparent_60%)]" />
-        <h2 className="text-center text-4xl tracking-widest font-bold mb-4">
-          FEATURED ROOMS
-        </h2>
-        <p className="text-center text-gray-400 mb-20">
-          Test your mind. Discover your limits.
-        </p>
-
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 px-8 relative z-10">
-        {rooms.map(room => (
-        <div
-          key={room.id}
-          className="glass rounded-2xl overflow-hidden hover:-translate-y-3 transition-all duration-500 shadow-xl shadow-purple-900/30"
-          >
-          <div className="relative h-56">
-            <Image
-              src={room.img}
-              alt={room.title}
-              fill
-              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-              className="object-cover"
-              quality={100}
-            />
-          </div>
-
-            <div className="p-8">
-              <h3 className="font-bold text-lg mb-2 tracking-wider">
-                {room.title}
-              </h3>
-
-              <p className="text-sm text-gray-400 mb-6">
-                {room.description}
-              </p>
-
-              <Link
-                href={`/rooms/${room.id}`}
-                className="inline-block border border-white/20 px-5 py-2 rounded-lg text-sm hover:bg-white/10 transition"
-              >
-                LEARN MORE →
-              </Link>
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 px-8 relative z-10">
+          {rooms.map(room => (
+            <div key={room.id} className="glass rounded-2xl overflow-hidden hover:-translate-y-3 transition-all duration-500 shadow-xl shadow-purple-900/30">
+              <div className="relative h-56">
+                <Image src={room.img} alt={room.title} fill sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" className="object-cover" quality={100} />
+              </div>
+              <div className="p-8">
+                <h3 className="font-bold text-lg mb-2 tracking-wider">{room.title}</h3>
+                <p className="text-sm text-gray-400 mb-6">{room.description}</p>
+                <button
+                  onClick={() => setSelectedRoom(room.id)}
+                  className="inline-block border border-white/20 px-5 py-2 rounded-lg text-sm hover:bg-white/10 transition"
+                >
+                  LEARN MORE →
+                </button>
+              </div>
             </div>
-          </div>
           ))}
         </div>
-
-    </section>
+      </section>
 
     {/* HOW IT WORKS */}    
     <section className="relative py-32 bg-[#05000a]">
@@ -273,9 +235,6 @@ export default function Page() {
       </div>
     </section>
 
-
-
-    
         <section className="relative py-32 bg-[#05000a]">
 
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,var(--color-brand)/10,transparent_70%)]" />
@@ -349,6 +308,33 @@ export default function Page() {
 
         </div>
       </section>
+
+    {/* ROOM DETAILS MODAL */}
+      {selectedRoom && room && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-6">
+          <div className="bg-[#13021d] rounded-2xl shadow-xl max-w-3xl w-full relative overflow-y-auto max-h-[90vh] p-8">
+            <button
+              onClick={() => setSelectedRoom(null)}
+              className="absolute top-4 right-4 text-white text-2xl hover:text-purple-400"
+            >
+              ✕
+            </button>
+            <h2 className="text-3xl font-extrabold mb-4">{room.title}</h2>
+            <p className="text-gray-400 mb-6">{room.description}</p>
+            <div className="relative h-72 rounded-xl overflow-hidden mb-6">
+              <Image src={room.img} alt={room.title} fill className="object-cover" />
+            </div>
+            <div className="text-gray-200">{room.details}</div>
+            <div className="flex justify-end mt-8">
+            <Link href="/booknow">
+              <button className="px-6 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg text-sm font-semibold">
+                BOOK NOW
+              </button>
+            </Link>
+            </div>
+          </div>
+        </div>
+      )}  
 
     </main>
   );
