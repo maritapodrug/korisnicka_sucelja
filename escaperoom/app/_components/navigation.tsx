@@ -147,29 +147,38 @@ useEffect(() => {
                   {getInitials(user.email!)}
                 </button>
 
-                {/* Dropdown menu */}
-                {dropdownOpen && (
-                  <div className="absolute top-full mt-2 right-0 w-40 bg-[#1a0d2a] rounded-lg shadow-lg flex flex-col border border-white/10 overflow-hidden z-50">
-                    <button
-                      onClick={() => {
-                        router.push("/account")
-                        setDropdownOpen(false)
-                      }}
-                      className="w-full text-left px-4 py-2 text-white/80 hover:bg-white/10 hover:text-white transition cursor-pointer"
-                    >
-                      Account
-                    </button>
-                    <button
-                      onClick={() => {
-                        logout()
-                        setDropdownOpen(false)
-                      }}
-                      className="w-full text-left px-4 py-2 text-red-400 hover:bg-white/10 hover:text-red-300 transition cursor-pointer"
-                    >
-                      Logout
-                    </button>
-                  </div>
-                )}
+          {/* Dropdown menu */}
+          {dropdownOpen && (
+            <div className="absolute top-full mt-2 right-0 w-44 bg-[#1a0d2a] rounded-lg shadow-lg flex flex-col border border-white/10 overflow-hidden z-50">
+              
+              {/* Prikaz imena korisnika */}
+              <div className="px-4 py-2 text-white font-semibold border-b border-white/10">
+                {user.user_metadata?.first_name && user.user_metadata?.last_name
+                  ? `Hello ${user.user_metadata.first_name}!`
+                  : user.email}
+              </div>
+
+              <button
+                onClick={() => {
+                  router.push("/account")
+                  setDropdownOpen(false)
+                }}
+                className="w-full text-left px-4 py-2 text-white/80 hover:bg-white/10 hover:text-white transition cursor-pointer"
+              >
+                Account
+              </button>
+              <button
+                onClick={() => {
+                  logout()
+                  setDropdownOpen(false)
+                }}
+                className="w-full text-left px-4 py-2 text-red-400 hover:bg-white/10 hover:text-red-300 transition cursor-pointer"
+              >
+                Logout
+              </button>
+            </div>
+          )}
+
               </div>
             ) : (
               <div className="hidden md:flex items-center gap-3 text-xs tracking-widest">
@@ -244,7 +253,9 @@ useEffect(() => {
               >
                 {getInitials(user.email!)}
               </button>
-
+              {user.user_metadata?.first_name && user.user_metadata?.last_name
+                  ? `Hello ${user.user_metadata.first_name}!`
+                  : user.email}
               <button
                 onClick={() => {
                   logout()
