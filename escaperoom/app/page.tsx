@@ -117,11 +117,19 @@ export default function Page() {
             BOOK NOW
           </button>
           </Link>
-          <Link href="/rooms">
-          <button className="px-10 py-4 bg-white/40 font-semibold border-white/30 rounded-lg hover:bg-purple-700/50">
-              VIEW ROOMS
-          </button>
-          </Link>
+        <button
+          onClick={() => {
+            const el = document.getElementById("rooms")
+            if (el) {
+              el.scrollIntoView({ behavior: "smooth" })
+            } else {
+              window.location.href = "/#rooms"
+            }
+          }}
+          className="px-10 py-4 bg-white/40 font-semibold border-white/30 rounded-lg hover:bg-purple-700/50"
+        >
+          VIEW ROOMS
+        </button>
         </div>
       </div>
     </section>

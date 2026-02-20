@@ -4,6 +4,8 @@ export interface Room {
   title: string
   description: string
   img: string
+  minPlayers:number
+  maxPlayers:number
   details: string
 }
 
@@ -13,6 +15,8 @@ export const rooms: Room[] = [
     title: "CHRONOCRASH: THE TIME RIFT",
     description: "Trapped in a broken time machine, you're jumping through timelines. Fix the machine — or be erased from history.",
     img: "/rooms/room11.jpg",
+    minPlayers:2,
+    maxPlayers:5,
     details: `
 Welcome to CHRONOCRASH: THE TIME RIFT.  
 
@@ -31,6 +35,8 @@ Ideal for 2–5 players. Difficulty: Hard.
     title: "THE MASTERPIECE HEIST",
     description: "Infiltrate the city's most secure museum and steal a priceless painting. The plan was perfect — until the alarms went off. The clock is ticking.",
     img: "/rooms/room22.jpg",
+    minPlayers:3,
+    maxPlayers:6,
     details: `
 THE MASTERPIECE HEIST:  
 
@@ -49,6 +55,8 @@ Perfect for 3–6 players. Difficulty: Medium-Hard.
     title: "CURSE OF THE PHARAOH",
     description: "You've entered a long-lost pharaoh's tomb, but the door has sealed behind you. Solve ancient puzzles and escape the curse — or be buried forever.",
     img: "/rooms/room3.jpg",
+    minPlayers:2,
+    maxPlayers:4,
     details: `
 CURSE OF THE PHARAOH:  
 
