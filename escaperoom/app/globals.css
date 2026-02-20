@@ -41,7 +41,9 @@ body {
   color: #ffffff;
   font-family: var(--font-body);
 }
-
+html {
+  scroll-behavior: smooth;
+}
 /* Headings */
 h1, h2, h3 {
   font-family: var(--font-heading);

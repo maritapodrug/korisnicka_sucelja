@@ -1,0 +1,156 @@
+// app/_components/HomeClient.tsx
+"use client"
+
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import Image from "next/image"
+import { useRouter } from "next/navigation"
+import { Room } from "../../lib/roomData"
+import HeroSlider from "./HeroSlider"
+import FeaturedRooms from "./FeaturedRooms"
+
+interface Props {
+  rooms: Room[]
+  steps?: { title: string; text: string; icon: string }[]
+  testimonials?: { name: string; text: string }[]
+}
+
+export default function HomeClient({ rooms, steps = [], testimonials = [] }: Props) {
+  const [selectedRoom, setSelectedRoom] = useState<string | null>(null)
+  const router = useRouter()
+  const room = rooms.find(r => r.id === selectedRoom)
+
+  // (opcionalno) you can prefetch popular routes on mount
+  useEffect(() => {
+    router.prefetch("/rooms")
+    router.prefetch("/booknow")
+  }, [router])
+
+  return (
+    <>
+      {/* HERO */}
+      <HeroSlider />
+
+      {/* FEATURED ROOMS */}
+      <FeaturedRooms rooms={rooms} onSelectRoom={setSelectedRoom} />
+
+      {/* HOW IT WORKS (server content could be here too, but small static content is fine client-side) */}
+      <section className="relative py-32 bg-gradient-to-b from-[#0a0214] to-[#05000a] overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,#ca7ef620,transparent_70%)]" />
+        <div className="relative z-10 max-w-6xl mx-auto px-6">
+          <div className="text-center mb-24">
+            <h2 className="text-1xl md:text-4xl font-extrabold tracking-[0.3em] mb-6">HOW IT WORKS</h2>
+            <p className="text-gray-400 max-w-xl mx-auto">From booking to escape — it only takes three simple steps.</p>
+          </div>
+
+          <div className="relative">
+            <div className="absolute top-1/2 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#ca7ef6] to-transparent hidden md:block" />
+            <div className="flex flex-col md:flex-row justify-between items-center gap-24 md:gap-0">
+              {steps.map((step, i) => (
+                <div key={i} className="relative flex flex-col items-center text-center md:w-1/3 group">
+                  <div className="relative z-10 w-20 h-20 rounded-full bg-gradient-to-br from-[#ca7ef6] to-purple-800 flex items-center justify-center text-black font-bold text-xl shadow-lg shadow-[#ca7ef6]/30 transition-transform duration-500 group-hover:scale-110">
+                    0{i + 1}
+                  </div>
+                  <div className="mt-10 md:mt-16 max-w-xs">
+                    <h3 className="font-semibold tracking-widest mb-4 text-white">{step.title}</h3>
+                    <p className="text-gray-400 text-sm leading-relaxed">{step.text}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* TESTIMONIALS */}
+      <section className="relative py-32 bg-[rgba(202,126,246,0.15)]">
+        <h2 className="text-center text-4xl tracking-[0.3em] font-bold mb-20">WHAT ESCAPERS SAY</h2>
+        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 px-8">
+          {testimonials.map((t, i) => (
+            <div key={i} className="relative p-10 rounded-2xl shadow-xl hover:-translate-y-3 transition duration-500 bg-[#13021d] backdrop-blur-md border border-white/10">
+              <div className="text-[#ca7ef6] mb-4 tracking-widest">★★★★★</div>
+              <p className="italic text-[rgba(255, 255, 255, 0.8)] mb-6 leading-relaxed">“{t.text}”</p>
+              <span className="text-[#ca7ef6] font-semibold text-sm">{t.name}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* VISIT US */}
+      <section className="relative py-32 bg-[#05000a]">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,var(--color-brand)/10,transparent_70%)]" />
+        <h2 className="text-center text-4xl tracking-[0.3em] font-bold mb-20">VISIT US</h2>
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 px-8 relative z-10">
+          <div className="space-y-14">
+            {/* Address, phone, hours (same as before) */}
+            <div className="flex gap-6 items-start">
+              <div className="w-auto h-auto rounded-xl bg-[var(--color-brand)]/10 flex items-center justify-center">
+                <Image src="/icons/location.png" alt="" width={24} height={24} />
+              </div>
+              <div>
+                <p className="uppercase tracking-widest text-xs text-[var(--color-brand)] mb-2">Visit Us</p>
+                <p className="text-lg font-semibold">Ulica Slobode 14</p>
+                <p className="text-gray-400">Split, Croatia</p>
+              </div>
+            </div>
+
+            {/* Phone */}
+            <div className="flex gap-6 items-start">
+              <div className="w-auto h-auto rounded-xl bg-[var(--color-brand)]/10 flex items-center justify-center">
+                <Image src="/icons/phone.png" alt="" width={24} height={24} />
+              </div>
+              <div>
+                <p className="uppercase tracking-widest text-xs text-[var(--color-brand)] mb-2">Give Us A Call</p>
+                <p className="text-lg font-semibold">(+385) 11 223 344</p>
+              </div>
+            </div>
+
+            {/* Hours */}
+            <div className="flex gap-6 items-start">
+              <div className="w-auto h-auto rounded-xl bg-[var(--color-brand)]/10 flex items-center justify-center">
+                <Image src="/icons/clock.png" alt="" width={24} height={24} />
+              </div>
+              <div>
+                <p className="uppercase tracking-widest text-xs text-[var(--color-brand)] mb-2">Open Hours</p>
+                <p className="text-lg font-semibold">9:00am – 11:00pm</p>
+                <p className="text-gray-400">Every day</p>
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT – Google Map */}
+          <div className="relative h-[480px] rounded-2xl overflow-hidden glass shadow-xl">
+            <iframe
+              className="absolute inset-0 w-full h-full border-0"
+              loading="lazy"
+              allowFullScreen
+              referrerPolicy="no-referrer-when-downgrade"
+              src="https://www.google.com/maps?q=Ulica%20Slobode%2014%20Split&output=embed"
+            />
+            <div className="absolute inset-0 bg-black/20 pointer-events-none" />
+          </div>
+        </div>
+      </section>
+
+      {/* ROOM DETAILS MODAL */}
+      {selectedRoom && room && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-6">
+          <div className="bg-[#13021d] rounded-2xl shadow-xl max-w-3xl w-full relative overflow-y-auto max-h-[90vh] p-8">
+            <button onClick={() => setSelectedRoom(null)} className="absolute top-4 right-4 text-white text-2xl hover:text-purple-400">✕</button>
+            <h2 className="text-3xl font-extrabold mb-4">{room.title}</h2>
+            <p className="text-gray-400 mb-6">{room.description}</p>
+            <div className="relative h-72 rounded-xl overflow-hidden mb-6">
+              <Image src={room.img} alt={room.title} fill className="object-cover" placeholder={room.blurDataURL ? "blur" : undefined} blurDataURL={room.blurDataURL ?? undefined} quality={75} />
+            </div>
+            <div className="text-gray-200">{room.details}</div>
+            <div className="flex justify-end mt-8">
+              <Link href="/booknow">
+                <button className="px-6 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg text-sm font-semibold">BOOK NOW</button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  )
+}
