@@ -73,12 +73,24 @@ useEffect(() => {
       setActiveSection("HOME") // iznad ili ispod rooms
     }
   }
-
+  
   window.addEventListener("scroll", handleScroll)
   handleScroll() // odmah postavi stanje
   return () => window.removeEventListener("scroll", handleScroll)
-}, [])
-
+}, [pathname])
+  useEffect(() => {
+  if (pathname === "/") {
+    setActiveSection("HOME")
+  } else if (pathname.startsWith("/blog")) {
+    setActiveSection("BLOG")
+  } else if (pathname.startsWith("/booknow")) {
+    setActiveSection("BOOK NOW")
+  } else if (pathname.startsWith("/contact")) {
+    setActiveSection("CONTACT US")
+  } else {
+    setActiveSection("")
+  }
+}, [pathname])
 
   return (
     <>
@@ -91,7 +103,7 @@ useEffect(() => {
           </Link>
 
           {/* DESKTOP NAV */}
-          <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 gap-12 text-xs tracking-[0.25em] h-full">
+          <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 gap-12 text-sm font-semibold tracking-[0.2em] h-full">
             {links.map(link => {
               const isRooms = link.name === "ROOMS"
               const active = link.name === activeSection
@@ -106,7 +118,7 @@ useEffect(() => {
                       scrollToRooms()
                     }
                   }}
-                  className={`relative h-full flex items-center px-4 whitespace-nowrap text-white/70 hover:text-white hover:bg-white/10 transition-all duration-300 ${active && "text-white"}`}
+                  className={`relative h-full flex items-center px-4 whitespace-nowrap text-white/70 hover:text-white hover:bg-white/10 transition-all duration-300 hover:scale-105 ${active && "text-white font-bold"}`}
                 >
                   {link.name}
                   {active && (

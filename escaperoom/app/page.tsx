@@ -141,12 +141,16 @@ export default function Page() {
               <div className="p-8">
                 <h3 className="font-bold text-lg mb-2 tracking-wider">{room.title}</h3>
                 <p className="text-sm text-gray-400 mb-6">{room.description}</p>
-                <button
-                  onClick={() => setSelectedRoom(room.id)}
-                  className="inline-block border border-white/20 px-5 py-2 rounded-lg text-sm hover:bg-white/10 transition"
-                >
-                  LEARN MORE →
-                </button>
+                <button onClick={() => setSelectedRoom(room.id)} className="group inline-flex items-center gap-2 text-sm font-semibold tracking-wide text-white transition-all duration-300 hover:text-[#ca7ef6]">
+                <span className="relative">
+                      LEARN MORE
+                      <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-[#ca7ef6] transition-all duration-300 group-hover:w-full"></span>
+                    </span>
+
+                  <span className="transition-all duration-300 group-hover:translate-x-2 group-hover:text-[#ca7ef6]">
+                      →
+                  </span>
+                  </button>
               </div>
             </div>
           ))}
@@ -154,52 +158,59 @@ export default function Page() {
       </section>
 
     {/* HOW IT WORKS */}    
-    <section className="relative py-32 bg-[#05000a]">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,#3b0a5f20,transparent_70%)]" />
 
-        <h2 className="text-center text-4xl tracking-[0.3em] font-bold mb-6">
-          HOW IT WORKS
-        </h2>
-        <p className="text-center text-gray-400 mb-20 max-w-xl mx-auto">
-          From booking to escape — it only takes three simple steps.
-        </p>
+<section className="relative py-32 bg-gradient-to-b from-[#0a0214] to-[#05000a] overflow-hidden">
 
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 px-8 relative z-10">
-          {steps.map((step, i) => (
-            <div
-              key={i}
-              className="glass rounded-2xl p-10 text-center relative overflow-hidden group"
-            >
-              {/* Glow on hover */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition bg-purple-600/10 blur-2xl" />
+  {/* Background glow */}
+  <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,#ca7ef620,transparent_70%)]" />
 
-              {/* Icon */}
-              <div className="relative w-20 h-20 mx-auto mb-8">
-                <Image
-                  src={step.icon}
-                  alt={step.title}
-                  fill
-                  className="object-contain"
-                />
-              </div>
+  <div className="relative z-10 max-w-6xl mx-auto px-6">
 
-              {/* Number */}
-              <div className="absolute top-6 right-6 text-purple-500/20 text-6xl font-extrabold">
-                0{i + 1}
-              </div>
+    {/* Header */}
+    <div className="text-center mb-24">
+      <h2 className="text-1xl md:text-4xl font-extrabold tracking-[0.3em] mb-6">
+        HOW IT WORKS
+      </h2>
+      <p className="text-gray-400 max-w-xl mx-auto">
+        From booking to escape — it only takes three simple steps.
+      </p>
+    </div>
 
-              <h3 className="relative font-bold tracking-widest mb-4">
+    {/* Timeline Wrapper */}
+    <div className="relative">
+
+      {/* Central Line */}
+      <div className="absolute top-1/2 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#ca7ef6] to-transparent hidden md:block" />
+      <div className="absolute left-6 top-0 bottom-0 w-[2px] bg-gradient-to-b from-[#ca7ef6] to-transparent md:hidden" />
+
+      <div className="flex flex-col md:flex-row justify-between items-center gap-24 md:gap-0">
+
+        {steps.map((step, i) => (
+          <div key={i} className="relative flex flex-col items-center text-center md:w-1/3 group">
+
+            {/* Step Circle */}
+            <div className="relative z-10 w-20 h-20 rounded-full bg-gradient-to-br from-[#ca7ef6] to-purple-800 flex items-center justify-center text-black font-bold text-xl shadow-lg shadow-[#ca7ef6]/30 transition-transform duration-500 group-hover:scale-110">
+              0{i + 1}
+            </div>
+
+            {/* Desktop Content */}
+            <div className="mt-10 md:mt-16 max-w-xs">
+              <h3 className="font-semibold tracking-widest mb-4 text-white">
                 {step.title}
               </h3>
-
-              <p className="relative text-gray-400 text-sm leading-relaxed">
+              <p className="text-gray-400 text-sm leading-relaxed">
                 {step.text}
               </p>
             </div>
-          ))}
-        </div>
-      </section>
 
+          </div>
+        ))}
+
+      </div>
+    </div>
+
+  </div>
+</section>
 
     {/* TESTIMONIALS */}
     <section className="relative py-32 bg-[rgba(202,126,246,0.15)]">
