@@ -3,6 +3,7 @@ import "./globals.css";
 import { Navigation } from "./_components/navigation";
 import { Footer } from "./_components/footer";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 
 export const metadata: Metadata = {
   title: "EscapeRoom",

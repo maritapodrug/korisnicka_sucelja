@@ -1,10 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Calendar from "./calendar"
 import { supabase } from "@/lib/supabase"
 import { useUser } from "../hooks/useUser"
 import { rooms, Room } from "@/lib/roomData"
+import emailjs from "@emailjs/browser"
 
 function getRoomsForDate(date: Date): (Room & { times: string[] })[] {
   const day = date.getDate()
@@ -43,6 +44,10 @@ export default function BookingClient() {
 
   const roomsForDate = date ? getRoomsForDate(date) : []
 
+    useEffect(() => {
+      emailjs.init("FFMt7iEcrbqX8wRJH")
+    }, [])
+
   async function fetchBookings(selectedDate: Date) {
     const { data, error } = await supabase
       .from("bookings")
@@ -79,6 +84,19 @@ export default function BookingClient() {
 
     if (error) setMessage("There is an error with this reservation.")
     else {
+        const templateParams = {
+    email: user?.email ?? guestEmail,
+    room: roomTitle,
+    date: date?.toISOString().split("T")[0],
+    time:time,
+    players,
+  }
+
+  // @ts-ignore
+  emailjs.send("service_4xit7mb", "template_3z1l6bo", templateParams)
+    .then(() => console.log("Email sent"))
+    .catch((err: unknown) => console.log(err))
+      
       setMessage("Your reservation is successful! 🎉")
       setSelectedSlot(null)
       setGuestName("")
