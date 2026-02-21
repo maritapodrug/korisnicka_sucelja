@@ -81,11 +81,11 @@ useEffect(() => {
   useEffect(() => {
   if (pathname === "/") {
     setActiveSection("HOME")
-  } else if (pathname.startsWith("/blog")) {
+  } else if (pathname?.startsWith("/blog")) {
     setActiveSection("BLOG")
-  } else if (pathname.startsWith("/booknow")) {
+  } else if (pathname?.startsWith("/booknow")) {
     setActiveSection("BOOK NOW")
-  } else if (pathname.startsWith("/contact")) {
+  } else if (pathname?.startsWith("/contact")) {
     setActiveSection("CONTACT US")
   } else {
     setActiveSection("")
@@ -153,9 +153,9 @@ useEffect(() => {
               
               {/* Prikaz imena korisnika */}
               <div className="px-4 py-2 text-white font-semibold border-b border-white/10">
-                {user.user_metadata?.first_name && user.user_metadata?.last_name
+                {user.user_metadata?.first_name
                   ? `Hello ${user.user_metadata.first_name}!`
-                  : user.email}
+                  : `Hello ${user.email?.split("@")[0]}!`}
               </div>
 
               <button
