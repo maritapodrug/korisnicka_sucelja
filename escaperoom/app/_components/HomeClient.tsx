@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation"
 import { Room } from "../../lib/roomData"
 import HeroSlider from "./HeroSlider"
 import FeaturedRooms from "./FeaturedRooms"
+import { motion, AnimatePresence } from "framer-motion"
 
 interface Props {
   rooms: Room[]
@@ -25,6 +26,44 @@ export default function HomeClient({ rooms, steps = [], testimonials = [] }: Pro
     router.prefetch("/rooms")
     router.prefetch("/booknow")
   }, [router])
+
+    const [index, setIndex] = useState(0)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % testimonials.length)
+    }, 7000)
+    return () => clearInterval(interval)
+  }, [])
+
+  const center = testimonials[index]
+  const left = testimonials[(index - 1 + testimonials.length) % testimonials.length]
+  const right = testimonials[(index + 1) % testimonials.length]
+
+  function Card({ item, active }: any) {
+    return (
+      <motion.div
+        initial={{ opacity: 0.6, scale: 0.9 }}
+        animate={{ opacity: active ? 1 : 0.6, scale: active ? 1 : 0.9 }}
+        transition={{ duration: 0.4 }}
+        className={`rounded-2xl p-8 backdrop-blur-xl border border-white/10
+        ${active ? "bg-gradient-to-b from-purple-900/40 to-black/40 shadow-[0_0_40px_rgba(202,126,246,0.3)]" : "bg-black/30"}
+        w-full max-w-xl`}
+      >
+        <div className="mb-4 text-purple-400 tracking-widest text-sm">
+          {item.rating.toFixed(1)} ★
+        </div>
+
+        <p className="text-gray-300 italic leading-relaxed mb-6">
+          “{item.text}”
+        </p>
+
+        <div className="text-sm text-gray-400">
+          <span className="font-semibold text-white">{item.name}</span> · {item.tag}
+        </div>
+      </motion.div>
+    )
+  }
 
   return (
     <>
@@ -63,75 +102,80 @@ export default function HomeClient({ rooms, steps = [], testimonials = [] }: Pro
       </section>
 
       {/* TESTIMONIALS */}
-      <section className="relative py-32 bg-[rgba(202,126,246,0.15)]">
-        <h2 className="text-center text-4xl tracking-[0.3em] font-bold mb-20">WHAT ESCAPERS SAY</h2>
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 px-8">
-          {testimonials.map((t, i) => (
-            <div key={i} className="relative p-10 rounded-2xl shadow-xl hover:-translate-y-3 transition duration-500 bg-[#13021d] backdrop-blur-md border border-white/10">
-              <div className="text-[#ca7ef6] mb-4 tracking-widest">★★★★★</div>
-              <p className="italic text-[rgba(255, 255, 255, 0.8)] mb-6 leading-relaxed">“{t.text}”</p>
-              <span className="text-[#ca7ef6] font-semibold text-sm">{t.name}</span>
-            </div>
-          ))}
+    <section className="py-28 relative bg-[rgba(202,126,246,0.15)] overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(#ca7ef620,transparent_80%)]" />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-6 text-center">
+        <h2 className="text-4xl font-extrabold tracking-[0.3em] mb-4">
+          WHAT ESCAPERS SAY
+        </h2>
+        <p className="text-gray-400 mb-16">
+          Rated 4.9/5 by over 300 players
+        </p>
+
+        <div className="flex items-center justify-center gap-6">
+          <div className="hidden md:block w-1/4">
+            <Card item={left} active={false} />
+          </div>
+
+          <div className="w-full md:w-1/2">
+            <AnimatePresence mode="wait">
+              <Card key={center.name} item={center} active={true} />
+            </AnimatePresence>
+          </div>
+
+          <div className="hidden md:block w-1/4">
+            <Card item={right} active={false} />
+          </div>
         </div>
-      </section>
+      </div>
+    </section>
 
       {/* VISIT US */}
-      <section className="relative py-32 bg-[#05000a]">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,var(--color-brand)/10,transparent_70%)]" />
-        <h2 className="text-center text-4xl tracking-[0.3em] font-bold mb-20">VISIT US</h2>
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 px-8 relative z-10">
-          <div className="space-y-14">
-            {/* Address, phone, hours (same as before) */}
-            <div className="flex gap-6 items-start">
-              <div className="w-auto h-auto rounded-xl bg-[var(--color-brand)]/10 flex items-center justify-center">
-                <Image src="/icons/location.png" alt="" width={24} height={24} />
-              </div>
-              <div>
-                <p className="uppercase tracking-widest text-xs text-[var(--color-brand)] mb-2">Visit Us</p>
-                <p className="text-lg font-semibold">Ulica Slobode 14</p>
-                <p className="text-gray-400">Split, Croatia</p>
-              </div>
-            </div>
+      <section className="relative py-32 bg-[#05000a]"> 
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,var(--color-brand)/10,transparent_70%)]" />
+        <h2 className="text-center text-4xl tracking-[0.3em] font-bold mb-20">VISIT US</h2> 
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 px-8 relative z-10"> 
+          <div className="space-y-14"> {/* Address, phone, hours (same as before) */} 
+            <div className="flex gap-6 items-start"> 
+              <div className="w-auto h-auto rounded-xl bg-[var(--color-brand)]/10 flex items-center justify-center"> 
+              <Image src="/icons/location.png" alt="" width={24} height={24} /> 
+              </div> 
+              <div> 
+                <p className="uppercase tracking-widest text-xs text-[var(--color-brand)] mb-2">Visit Us</p> 
+                <p className="text-lg font-semibold">Ulica Slobode 14</p> <p className="text-gray-400">Split, Croatia</p> 
+                </div> 
+              </div> {/* Phone */} 
+              <div className="flex gap-6 items-start"> 
+                <div className="w-auto h-auto rounded-xl bg-[var(--color-brand)]/10 flex items-center justify-center"> 
+                <Image src="/icons/phone.png" alt="" width={24} height={24} /> 
+                </div> 
+                <div> 
+                  <p className="uppercase tracking-widest text-xs text-[var(--color-brand)] mb-2">Give Us A Call</p>
+                   <p className="text-lg font-semibold">(+385) 11 223 344</p> 
+                   </div> 
+                   </div> 
+              {/* Hours */} 
+              <div className="flex gap-6 items-start"> 
+                <div className="w-auto h-auto rounded-xl bg-[var(--color-brand)]/10 flex items-center justify-center"> 
+                <Image src="/icons/clock.png" alt="" width={24} height={24} /> 
+                </div> 
+                <div> 
+                  <p className="uppercase tracking-widest text-xs text-[var(--color-brand)] mb-2">Open Hours</p> 
+                  <p className="text-lg font-semibold">9:00am – 11:00pm</p> <p className="text-gray-400">Every day</p> 
+                  </div> 
+                  </div> 
+                  </div> 
+                  {/* RIGHT – Google Map */} 
+                  <div className="relative h-[430px] rounded-2xl overflow-hidden glass shadow-xl"> 
+                    <iframe className="absolute inset-0 w-full h-full border-0" loading="lazy" allowFullScreen referrerPolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Ulica%20Slobode%2014%20Split&output=embed" /> 
+                    <div className="absolute inset-0 bg-black/20 pointer-events-none" /> 
+                    </div> 
+                    </div> 
+                    
+                    </section>
 
-            {/* Phone */}
-            <div className="flex gap-6 items-start">
-              <div className="w-auto h-auto rounded-xl bg-[var(--color-brand)]/10 flex items-center justify-center">
-                <Image src="/icons/phone.png" alt="" width={24} height={24} />
-              </div>
-              <div>
-                <p className="uppercase tracking-widest text-xs text-[var(--color-brand)] mb-2">Give Us A Call</p>
-                <p className="text-lg font-semibold">(+385) 11 223 344</p>
-              </div>
-            </div>
-
-            {/* Hours */}
-            <div className="flex gap-6 items-start">
-              <div className="w-auto h-auto rounded-xl bg-[var(--color-brand)]/10 flex items-center justify-center">
-                <Image src="/icons/clock.png" alt="" width={24} height={24} />
-              </div>
-              <div>
-                <p className="uppercase tracking-widest text-xs text-[var(--color-brand)] mb-2">Open Hours</p>
-                <p className="text-lg font-semibold">9:00am – 11:00pm</p>
-                <p className="text-gray-400">Every day</p>
-              </div>
-            </div>
-          </div>
-
-          {/* RIGHT – Google Map */}
-          <div className="relative h-[480px] rounded-2xl overflow-hidden glass shadow-xl">
-            <iframe
-              className="absolute inset-0 w-full h-full border-0"
-              loading="lazy"
-              allowFullScreen
-              referrerPolicy="no-referrer-when-downgrade"
-              src="https://www.google.com/maps?q=Ulica%20Slobode%2014%20Split&output=embed"
-            />
-            <div className="absolute inset-0 bg-black/20 pointer-events-none" />
-          </div>
-        </div>
-      </section>
-
+            
       {/* ROOM DETAILS MODAL */}
       {selectedRoom && room && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-6">

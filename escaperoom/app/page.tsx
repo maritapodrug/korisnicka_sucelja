@@ -2,7 +2,6 @@
 import HomeClient from "./_components/HomeClient"
 import { rooms } from "../lib/roomData"
 
-// steps/testimonials mogu ostati ovdje (server) pa ih možemo proslijediti dalje ili prikazati ovdje
 const steps = [
   { title: "Book Online", text: "Choose your room and preferred time slot. Reserve your escape adventure in seconds.", icon: "/icons/step1.png" },
   { title: "Arrive & Get Briefed", text: "Meet your game master who will explain the rules and immerse you in the story.", icon: "/icons/step2.png" },
@@ -10,9 +9,24 @@ const steps = [
 ]
 
 const testimonials = [
-  { name: "Ana K.", text: "Best escape room in Split! The Masterpiece Heist was incredibly immersive. We barely made it out!" },
-  { name: "Marco P.", text: "Mind-blowing experience! The puzzles were challenging but fair. Our team had an amazing time." },
-  { name: "Sarah M.", text: "The Curse of the Pharaoh was absolutely thrilling! Great attention to detail and atmosphere" }
+  {
+    name: "Ana M.",
+    text: "One of the most immersive escape rooms we've ever played. The atmosphere was insane!",
+    rating: 5,
+    tag: "Date Night",
+  },
+  {
+    name: "Marko K.",
+    text: "Perfect team-building experience. Challenging, creative and extremely fun.",
+    rating: 4.9,
+    tag: "Corporate Event",
+  },
+  {
+    name: "Ivana P.",
+    text: "The puzzles were clever and the staff was amazing. Highly recommended!",
+    rating: 5,
+    tag: "Birthday Party",
+  },
 ]
 
 export default function Page() {
