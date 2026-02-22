@@ -3,6 +3,7 @@
 
 import { useState, useRef } from "react"
 import Image from "next/image"
+import emailjs from "@emailjs/browser"
 
 export default function ContactPage() {
   const [name, setName] = useState("")
@@ -16,44 +17,25 @@ export default function ContactPage() {
   const [hp, setHp] = useState("") // honeypot
   const toastTimeout = useRef<number | null>(null)
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setError(null)
-    setSuccessMsg(null)
+async function handleSubmit(e: React.FormEvent) {
+  e.preventDefault()
+  setLoading(true)
 
-    // basic client validation
-    if (!name.trim() || !email.trim() || !message.trim()) {
-      setError("Please fill in your name, email and message.")
-      return
-    }
+  try {
+    await emailjs.send(
+      "service_4xit7mb",
+      "template_28msx7l",
+      { name, email, phone, subject, message },
+      "FFMt7iEcrbqX8wRJH"
+    )
 
-    // honeypot check (bots will fill it)
-    if (hp) {
-      setSuccessMsg("Thanks — we got your message!")
-      showToastTemporarily()
-      return
-    }
-
-    setLoading(true)
-    try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, phone, subject, message }),
-      })
-
-      const data = await res.json()
-      if (!res.ok) throw new Error(data?.error || "Failed to send")
-
-      setSuccessMsg("Thanks — we got your message! We’ll reply within 24 hours.")
-      setName(""); setEmail(""); setPhone(""); setSubject("Booking Question"); setMessage("")
-      showToastTemporarily()
-    } catch (err: any) {
-      setError(err?.message || "Unexpected error. Please try again later.")
-    } finally {
-      setLoading(false)
-    }
+    setSuccessMsg("Email sent!")
+  } catch (err) {
+    setError("Failed to send email")
+  } finally {
+    setLoading(false)
   }
+}
 
   function showToastTemporarily() {
     // show toast for 4.5s

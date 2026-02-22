@@ -1,20 +1,20 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { BASE_API_URL } from "../page";
-import type { BlogPostProps as Post } from "../page";
 import { Suspense } from "react";
 import { Navigation } from "@components/navigation";
-
+import { BLOG_POSTS } from "@/lib/blog-data";
 interface BlogPostProps {
   params: { id: string };
 }
 
-async function fetchPost(id: string): Promise<Post> {
-  const response = await fetch(`${BASE_API_URL}/posts/${id}`);
-  if (!response.ok) {
-    throw new Error("Failed to fetch post");
+async function fetchPost(id: string) {
+  const post = BLOG_POSTS.find((p) => p.id === Number(id));
+
+  if (!post) {
+    throw new Error("Post not found");
   }
-  return response.json();
+
+  return post;
 }
 
 function PostSkeleton() {
