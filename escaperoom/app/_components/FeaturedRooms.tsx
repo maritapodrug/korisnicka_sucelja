@@ -1,12 +1,13 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import Image from "next/image"
-import { Room } from "../../lib/roomData"
 import Link from "next/link"
+import { Room } from "../../lib/roomData"
+
 interface Props {
   rooms: Room[]
-  onSelectRoom: (id: string) => void
+  onSelectRoom?: (id: string) => void
 }
 
 export default function FeaturedRooms({ rooms }: Props) {
@@ -19,9 +20,23 @@ export default function FeaturedRooms({ rooms }: Props) {
     }
     if (selectedRoom) {
       document.addEventListener("keydown", handleEsc)
+      // blokiraj scroll na body-u, ali dozvoli scroll u modal-u
+      const prev = document.body.style.overflow
+      document.body.style.overflow = "hidden"
+      return () => {
+        document.removeEventListener("keydown", handleEsc)
+        document.body.style.overflow = prev
+      }
     }
-    return () => document.removeEventListener("keydown", handleEsc)
+    return () => {}
   }, [selectedRoom])
+
+  // simple image preloader
+  const preloadImage = useCallback((src?: string) => {
+    if (!src || typeof window === "undefined") return
+    const img = new window.Image()
+    img.src = src
+  }, [])
 
   return (
     <section id="rooms" className="relative py-32 bg-gradient-to-b from-[#120018] to-[#05000a]">
@@ -49,7 +64,13 @@ export default function FeaturedRooms({ rooms }: Props) {
               <p className="text-sm text-gray-400 mb-6">{room.description}</p>
 
               <button
-                onClick={() => setSelectedRoom(room)}
+                onMouseEnter={() => preloadImage(room.img)} // preload on hover/focus
+                onFocus={() => preloadImage(room.img)}
+                onClick={() => {
+                  // preload immediately (best-effort) pa otvori modal
+                  preloadImage(room.img)
+                  setSelectedRoom(room)
+                }}
                 className="group inline-flex items-center gap-2 text-sm font-semibold tracking-wide text-white transition-all duration-300 hover:text-[#ca7ef6]"
               >
                 <span className="relative">
@@ -67,37 +88,46 @@ export default function FeaturedRooms({ rooms }: Props) {
 
       {/* ================= POPUP MODAL ================= */}
       {selectedRoom && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
+        // wrapper koji dozvoljava vertikalni scroll na mobilu ako je potrebno
+        <div
+          className="fixed inset-0 z-50 flex items-start md:items-center justify-center p-4 md:p-6 overflow-auto"
+          aria-modal="true"
+          role="dialog"
+          onClick={() => setSelectedRoom(null)} // click on backdrop closes
+        >
           {/* backdrop */}
           <div
             className="absolute inset-0 bg-black/70 backdrop-blur-sm animate-fadeIn"
-            onClick={() => setSelectedRoom(null)}
+            aria-hidden
           />
 
-          {/* modal */}
-          <div className="relative z-10 w-full max-w-5xl bg-gradient-to-b from-[#0d0213] to-[#050009] rounded-2xl overflow-hidden shadow-2xl border border-white/10 animate-scaleIn">
-
-            <div className="flex flex-col md:flex-row">
+          {/* modal - zaustavi propagaciju klika (klik unutar modala ne zatvara) */}
+          <div
+            className="relative z-10 w-full max-w-5xl bg-gradient-to-b from-[#0d0213] to-[#050009] rounded-2xl overflow-hidden shadow-2xl border border-white/10 animate-scaleIn max-h-[90vh]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex flex-col md:flex-row h-full">
 
               {/* IMAGE */}
-              <div className="relative md:w-1/2 h-64 md:h-auto">
+              <div className="relative md:w-1/2 h-64 md:h-auto flex-shrink-0">
                 <Image
                   src={selectedRoom.img}
                   alt={selectedRoom.title}
                   fill
                   className="object-cover"
                   quality={90}
+                  priority // želimo brže učitavanje unutar modala
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
               </div>
 
-              {/* CONTENT */}
-              <div className="md:w-1/2 p-8 flex flex-col gap-6">
-
+              {/* CONTENT (skrolabilno ako je potrebno) */}
+              <div className="md:w-1/2 p-6 md:p-8 flex flex-col gap-6 overflow-y-auto">
                 {/* Close */}
                 <button
                   onClick={() => setSelectedRoom(null)}
-                  className="absolute top-4 right-4 text-gray-400 hover:text-white transition text-xl"
+                  className="self-end text-gray-300 hover:text-white transition text-xl z-20"
+                  aria-label="Close"
                 >
                   ✕
                 </button>
@@ -125,12 +155,15 @@ export default function FeaturedRooms({ rooms }: Props) {
                 </div>
 
                 {/* CTA */}
-                <Link href="/booknow">
-                  <button className="px-6 py-3 rounded-lg font-semibold bg-gradient-to-r from-[#9e6bf5] to-[#ca7ef6] text-black hover:opacity-95 transition">
-                    BOOK THIS ROOM
-                  </button>
-                </Link >
+                <div className="mt-2">
+                  <Link href="/booknow" onClick={() => setSelectedRoom(null)}>
+                    <button className="w-full px-6 py-3 rounded-lg font-semibold bg-gradient-to-r from-[#9e6bf5] to-[#ca7ef6] text-black hover:opacity-95 transition">
+                      BOOK THIS ROOM
+                    </button>
+                  </Link>
+                </div>
 
+               
               </div>
             </div>
           </div>
@@ -144,14 +177,14 @@ export default function FeaturedRooms({ rooms }: Props) {
           to { opacity: 1 }
         }
         @keyframes scaleIn {
-          from { opacity: 0; transform: scale(0.95); }
+          from { opacity: 0; transform: scale(0.97); }
           to { opacity: 1; transform: scale(1); }
         }
         .animate-fadeIn {
-          animation: fadeIn 0.25s ease-out;
+          animation: fadeIn 0.22s ease-out;
         }
         .animate-scaleIn {
-          animation: scaleIn 0.25s ease-out;
+          animation: scaleIn 0.22s ease-out;
         }
       `}</style>
     </section>
