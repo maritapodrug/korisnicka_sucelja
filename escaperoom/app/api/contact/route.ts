@@ -8,7 +8,7 @@ export async function POST(req: Request) {
     if (!name || !email || !message) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 })
     }
-
+    
     const transporter = nodemailer.createTransport({
       service: "gmail", // ili SMTP
       auth: {

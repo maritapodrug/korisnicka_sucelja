@@ -44,7 +44,7 @@ async function handleSubmit(e: React.FormEvent) {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-[#05000a] to-[#030007] text-white py-20 px-6">
+    <main className="min-h-screen bg-gradient-to-b from-[#05000a] to-[#030007] text-white py-20 px-6 pt-32">
       <div className="max-w-6xl mx-auto">
 
         {/* Page heading */}
