@@ -29,6 +29,13 @@ function getRoomsForDate(date: Date): (Room & { times: string[] })[] {
   })
 }
 
+function formatLocalDate(date: Date) {
+  const y = date.getFullYear()
+  const m = String(date.getMonth() + 1).padStart(2, "0")
+  const d = String(date.getDate()).padStart(2, "0")
+  return `${y}-${m}-${d}`
+}
+
 export default function BookingClient() {
   const user = useUser()
 
@@ -73,8 +80,7 @@ const { data, error } = await supabase
     guest_name: user ? null : guestName,
     guest_email: user ? null : guestEmail,
     room: roomTitle,
-    date: date.toISOString().split("T")[0],
-    time,
+    date: formatLocalDate(date),    time,
     players,
   })
   .select("id")
@@ -164,13 +170,21 @@ const adminTemplateParams = {
                   const value = `${room.title}-${time}`
                   const existingBooking = bookings.find((b) => b.room === room.title && b.time === time)
                   const isMine = user && existingBooking?.user_id === user.id
-                  const isTaken = existingBooking && !isMine                  
+                  const isTaken = existingBooking && !isMine
                   const active = selectedSlot === value
 
+                  // ⬇️ NEW: check if time already passed
+                  const now = new Date()
+
+                  const slotDateTime = new Date(date!)
+                  const [h, m] = time.split(":")
+                  slotDateTime.setHours(Number(h), Number(m), 0, 0)
+
+                  const isPast = slotDateTime < now
                   return (
                     <button
                       key={time}
-                      disabled={isMine || isTaken}
+                      disabled={isMine || isTaken || isPast}
                       onClick={() => {
                         if (!isMine && !isTaken) {
                           setSelectedSlot(value)
@@ -182,6 +196,8 @@ const adminTemplateParams = {
                         isMine
                           ? "bg-purple-700 text-white cursor-not-allowed"
                           : isTaken
+                          ? "bg-gray-700 text-gray-400 cursor-not-allowed"
+                          : isPast
                           ? "bg-gray-700 text-gray-400 cursor-not-allowed"
                           : active
                           ? "bg-purple-600 text-white"

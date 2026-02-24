@@ -13,7 +13,7 @@ type Booking = {
   time: string
   players: number
   created_at: string
-  originalPlayers?: number // dodano za praćenje promjene
+  originalPlayers?: number
 }
 
 function BookingSkeleton() {
@@ -31,7 +31,6 @@ function BookingSkeleton() {
   )
 }
 
-// Simple Modal component
 function DeleteModal({
   booking,
   onConfirm,
@@ -47,12 +46,11 @@ function DeleteModal({
 
   function handleClose() {
     setShow(false)
-    setTimeout(onCancel, 300)
+    setTimeout(onCancel, 250)
   }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* overlay */}
       <div
         className={`absolute inset-0 bg-black transition-opacity duration-300 ${
           show ? "opacity-50" : "opacity-0"
@@ -60,17 +58,19 @@ function DeleteModal({
         onClick={handleClose}
       />
 
-      {/* modal content */}
       <div
         className={`relative bg-gray-800 text-white p-6 rounded-xl max-w-sm w-full space-y-4 z-10 transform transition-all duration-300 ${
           show ? "scale-100 opacity-100" : "scale-95 opacity-0"
         }`}
       >
         <h2 className="text-xl font-bold">Delete Booking?</h2>
+
         <p>
-          Are you sure you want to delete the reservation for{" "}
-          <strong>{booking.room}</strong> on {booking.date} at {booking.time}?
+          Delete reservation for <strong>{booking.room}</strong>
+          <br />
+          {booking.date} — {booking.time}
         </p>
+
         <div className="flex justify-end gap-4">
           <button
             onClick={handleClose}
@@ -78,6 +78,7 @@ function DeleteModal({
           >
             Cancel
           </button>
+
           <button
             onClick={onConfirm}
             className="px-4 py-2 rounded bg-red-600 hover:bg-red-700 transition"
@@ -92,38 +93,62 @@ function DeleteModal({
 
 export default function AccountPage() {
   const user = useUser()
+
   const [bookings, setBookings] = useState<Booking[]>([])
   const [loading, setLoading] = useState(true)
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [modalBooking, setModalBooking] = useState<Booking | null>(null)
   const [message, setMessage] = useState<string | null>(null)
-  const [showMessage, setShowMessage] = useState(false)
 
+function isFutureBooking(b: Booking) {
+  const [year, month, day] = b.date.split("-").map(Number)
+  const [h, m] = b.time.split(":").map(Number)
+
+  const dt = new Date(year, month - 1, day, h, m, 0, 0)
+  return dt >= new Date()
+}
 
   useEffect(() => {
     if (!user) return
 
     async function fetchBookings() {
       setLoading(true)
+
       const { data, error } = await supabase
         .from("bookings")
         .select("*")
-        .eq("user_id", user!.id)
-        .order("created_at", { ascending: false })
+        .eq("user_id", user?.id)
 
       if (!error && data) {
-        // dodaj originalPlayers za praćenje promjena
-        const bookingsWithOriginal = data.map(b => ({
-          ...b,
-          originalPlayers: b.players
-        }))
-        setBookings(bookingsWithOriginal)
+        const future = data
+          .filter(isFutureBooking)
+          .map(b => ({
+            ...b,
+            originalPlayers: b.players
+          }))
+          .sort((a, b) => {
+            const da = new Date(a.date + " " + a.time)
+            const db = new Date(b.date + " " + b.time)
+            return da.getTime() - db.getTime()
+          })
+
+        setBookings(future)
       }
+
       setLoading(false)
     }
 
     fetchBookings()
   }, [user])
+
+  // auto remove expired bookings every 30s
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setBookings(prev => prev.filter(isFutureBooking))
+    }, 30000)
+
+    return () => clearInterval(interval)
+  }, [])
 
   function getRoomLimits(roomTitle: string) {
     const room = rooms.find(r => r.title === roomTitle)
@@ -135,8 +160,8 @@ export default function AccountPage() {
       prev.map(b => {
         if (b.id !== id) return b
         const { min, max } = getRoomLimits(b.room)
-        const newPlayers = Math.min(max, Math.max(min, b.players + delta))
-        return { ...b, players: newPlayers }
+        const next = Math.min(max, Math.max(min, b.players + delta))
+        return { ...b, players: next }
       })
     )
   }
@@ -145,32 +170,27 @@ export default function AccountPage() {
     const booking = bookings.find(b => b.id === id)
     if (!booking) return
 
-    const newPlayers = Number(booking.players)
-
     const { data, error } = await supabase
       .from("bookings")
-      .update({ players: newPlayers })
+      .update({ players: booking.players })
       .eq("id", id)
       .select()
 
-    if (error) {
-      setMessage("Failed to update players.")
+    if (error || !data) {
+      setMessage("Update failed.")
       return
     }
 
-    // update lokalnog state-a
     setBookings(prev =>
       prev.map(b =>
         b.id === id
-          ? { ...b, players: data[0].players, originalPlayers: data[0].players }
+          ? { ...b, originalPlayers: data[0].players }
           : b
       )
     )
 
-    // postavi privremenu poruku
-setMessage("Players updated successfully!")
-  setShowMessage(true)
-  setTimeout(() => setShowMessage(false), 5000) // nestaje nakon 5s
+    setMessage("Players updated ✓")
+    setTimeout(() => setMessage(null), 3000)
   }
 
   async function handleDelete(id: string) {
@@ -182,7 +202,7 @@ setMessage("Players updated successfully!")
       .eq("id", id)
 
     if (error) {
-      setMessage("Failed to delete booking.")
+      setMessage("Delete failed.")
       setDeletingId(null)
       return
     }
@@ -190,13 +210,14 @@ setMessage("Players updated successfully!")
     setBookings(prev => prev.filter(b => b.id !== id))
     setDeletingId(null)
     setModalBooking(null)
-    setMessage("Booking deleted successfully!")
-    setTimeout(() => setMessage(null), 5500)
+
+    setMessage("Booking deleted ✓")
+    setTimeout(() => setMessage(null), 3000)
   }
 
   if (!user) {
     return (
-      <div className="flex flex-col items-center justify-center py-32 text-center gap-6">
+      <div className="flex flex-col items-center justify-center py-32 gap-6">
         <h1 className="text-2xl font-bold">You are not logged in</h1>
         <Link
           href="/login"
@@ -210,112 +231,110 @@ setMessage("Players updated successfully!")
 
   return (
     <div className="flex flex-col md:flex-row w-full max-w-5xl gap-8 py-20 px-6">
-  {/* LEFT SIDEBAR */}
-  <div className="flex flex-col items-center md:items-start w-full md:w-64 bg-[#1a0d2a] p-6 rounded-2xl space-y-6">
-    {/* Avatar */}
-    <div
-      className="w-20 h-20 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold text-2xl"
-    >
-      {user.user_metadata?.first_name && user.user_metadata?.last_name
-        ? `${user.user_metadata.first_name[0]}${user.user_metadata.last_name[0]}`
-        : user.email?.slice(0,2).toUpperCase()}
-    </div>
 
-    {/* Name */}
-    <div className="text-white font-semibold text-lg text-center md:text-left">
-      {user.user_metadata?.first_name && user.user_metadata?.last_name
-        ? `${user.user_metadata.first_name} ${user.user_metadata.last_name}`
-        : "No Name"}
-    </div>
+      {/* SIDEBAR */}
+      <div className="flex flex-col items-center md:items-start w-full md:w-64 bg-[#1a0d2a] p-6 rounded-2xl space-y-6">
 
-    {/* Email */}
-    <div className="text-white/60 text-sm text-center md:text-left break-all">
-      {user.email}
-    </div>
-  </div>
+        <div className="w-20 h-20 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold text-2xl">
+          {user.user_metadata?.first_name && user.user_metadata?.last_name
+            ? `${user.user_metadata.first_name[0]}${user.user_metadata.last_name[0]}`
+            : user.email?.slice(0,2).toUpperCase()}
+        </div>
 
-  {/* RIGHT CONTENT (bookings) */}
-  <div className="flex-1 space-y-8">
-    <h1 className="text-3xl font-bold tracking-wide text-white">My Bookings</h1>
+        <div className="text-white font-semibold text-lg text-center md:text-left">
+          {user.user_metadata?.first_name && user.user_metadata?.last_name
+            ? `${user.user_metadata.first_name} ${user.user_metadata.last_name}`
+            : "No Name"}
+        </div>
 
-    {loading ? (
-      <BookingSkeleton />
-    ) : bookings.length === 0 ? (
-      <div className="text-white/60">You don't have any bookings yet.</div>
-    ) : (
-      <div className="space-y-4">
-        {bookings.map(b => {
-          const { min, max } = getRoomLimits(b.room)
-          return (
-            <div
-              key={b.id}
-              className="glass rounded-xl p-5 space-y-2 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4"
-            >
-              {/* Booking info */}
-              <div>
-                <div className="text-purple-300 font-semibold text-lg">{b.room}</div>
-                <div className="text-sm text-white/60">Date: {b.date}</div>
-                <div className="text-sm text-green-400">Time: {b.time}</div>
-              </div>
+        <div className="text-white/60 text-sm break-all">
+          {user.email}
+        </div>
+      </div>
 
-              {/* Players adjustment */}
-              <div className="flex flex-col items-center gap-2">
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => changePlayers(b.id, -1)}
-                    className="px-2 py-1 bg-purple-600 text-white rounded hover:bg-purple-700 transition"
-                    disabled={b.players <= min}
-                  >
-                    -
-                  </button>
+      {/* BOOKINGS */}
+      <div className="flex-1 space-y-8">
 
-                  <div className="px-3 py-1 bg-white/5 backdrop-blur-md rounded-xl border border-purple-500/20 text-purple-400 font-semibold text-lg">
-                    {b.players}
+        <h1 className="text-3xl font-bold text-white">My Bookings</h1>
+
+        {loading ? (
+          <BookingSkeleton />
+        ) : bookings.length === 0 ? (
+          <div className="text-white/60">No upcoming bookings.</div>
+        ) : (
+          <div className="space-y-4">
+            {bookings.map(b => {
+              const { min, max } = getRoomLimits(b.room)
+
+              return (
+                <div
+                  key={b.id}
+                  className="glass rounded-xl p-5 flex flex-col sm:flex-row justify-between gap-4"
+                >
+                  <div>
+                    <div className="text-purple-300 font-semibold text-lg">{b.room}</div>
+                    <div className="text-sm text-white/60">{b.date}</div>
+                    <div className="text-sm text-green-400">{b.time}</div>
+                  </div>
+
+                  <div className="flex flex-col items-center gap-2">
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => changePlayers(b.id, -1)}
+                        disabled={b.players <= min}
+                        className="px-2 py-1 bg-purple-600 rounded hover:bg-purple-700 disabled:opacity-30"
+                      >-</button>
+
+                      <div className="px-3 py-1 bg-white/5 rounded-xl border border-purple-500/20 text-purple-400 font-semibold">
+                        {b.players}
+                      </div>
+
+                      <button
+                        onClick={() => changePlayers(b.id, 1)}
+                        disabled={b.players >= max}
+                        className="px-2 py-1 bg-purple-600 rounded hover:bg-purple-700 disabled:opacity-30"
+                      >+</button>
+                    </div>
+
+                    {b.players !== b.originalPlayers && (
+                      <button
+                        onClick={() => confirmPlayersChange(b.id)}
+                        className="px-3 py-1 text-sm bg-purple-600 rounded hover:bg-purple-700"
+                      >
+                        Confirm Change
+                      </button>
+                    )}
                   </div>
 
                   <button
-                    onClick={() => changePlayers(b.id, 1)}
-                    className="px-2 py-1 bg-purple-600 text-white rounded hover:bg-purple-700 transition"
-                    disabled={b.players >= max}
+                    onClick={() => setModalBooking(b)}
+                    disabled={deletingId === b.id}
+                    className="px-3 py-1 text-sm bg-red-600 rounded hover:bg-red-700 self-start"
                   >
-                    +
+                    {deletingId === b.id ? "Deleting..." : "Delete"}
                   </button>
                 </div>
-
-                {b.players !== b.originalPlayers && (
-                  <button
-                    onClick={() => confirmPlayersChange(b.id)}
-                    className="px-3 py-1 text-sm bg-purple-600 hover:bg-purple-700 rounded-lg text-white transition"
-                  >
-                    Confirm Change
-                  </button>
-                )}
-              </div>
-
-              {/* Delete button */}
-              <button
-                onClick={() => setModalBooking(b)}
-                disabled={deletingId === b.id}
-                className="px-3 py-1 text-sm bg-red-600 hover:bg-red-700 rounded-lg text-white transition self-start"
-              >
-                {deletingId === b.id ? "Deleting..." : "Delete"}
-              </button>
-            </div>
-          )
-        })}
+              )
+            })}
+          </div>
+        )}
       </div>
-    )}
-  </div>
 
-  {/* Delete Modal */}
-  {modalBooking && (
-    <DeleteModal
-      booking={modalBooking}
-      onConfirm={() => handleDelete(modalBooking.id)}
-      onCancel={() => setModalBooking(null)}
-    />
-  )}
-</div>
+      {modalBooking && (
+        <DeleteModal
+          booking={modalBooking}
+          onConfirm={() => handleDelete(modalBooking.id)}
+          onCancel={() => setModalBooking(null)}
+        />
+      )}
 
+      {message && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-black/80 text-white px-6 py-3 rounded-xl backdrop-blur">
+          {message}
+        </div>
+      )}
+
+    </div>
   )
 }
