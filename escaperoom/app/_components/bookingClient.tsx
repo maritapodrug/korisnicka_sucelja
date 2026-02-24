@@ -44,10 +44,6 @@ export default function BookingClient() {
 
   const roomsForDate = date ? getRoomsForDate(date) : []
 
-    useEffect(() => {
-      emailjs.init("FFMt7iEcrbqX8wRJH")
-    }, [])
-
   async function fetchBookings(selectedDate: Date) {
     const { data, error } = await supabase
       .from("bookings")
@@ -58,53 +54,86 @@ export default function BookingClient() {
   }
 
   async function bookSlot() {
-    if (!date || !selectedSlot) return
+  if (!date || !selectedSlot) return
 
-    if (!user && (!guestName || !guestEmail)) {
-      setMessage("Please enter your name and email.")
-      return
-    }
+  if (!user && (!guestName || !guestEmail)) {
+    setMessage("Please enter your name and email.")
+    return
+  }
 
-    setLoading(true)
-    setMessage("")
+  setLoading(true)
+  setMessage("")
 
-    const [roomTitle, time] = selectedSlot.split("-")
+  const [roomTitle, time] = selectedSlot.split("-")
 
-    const { error } = await supabase.from("bookings").insert({
-      user_id: user?.id ?? null,
-      guest_name: user ? null : guestName,
-      guest_email: user ? null : guestEmail,
-      room: roomTitle,
-      date: date.toISOString().split("T")[0],
-      time,
-      players,
-    })
+const { data, error } = await supabase
+  .from("bookings")
+  .insert({
+    user_id: user?.id ?? null,
+    guest_name: user ? null : guestName,
+    guest_email: user ? null : guestEmail,
+    room: roomTitle,
+    date: date.toISOString().split("T")[0],
+    time,
+    players,
+  })
+  .select("id")
 
-    setLoading(false)
+  if (error || !data) {
+    setMessage("There is an error with this reservation.")
+    return
+  }
 
-    if (error) setMessage("There is an error with this reservation.")
-    else {
-        const templateParams = {
+try{
+  // -------------------------
+  // 1️⃣ Email korisniku
+  // -------------------------
+  emailjs.init("FFMt7iEcrbqX8wRJH")
+
+  const userTemplateParams = {
     email: user?.email ?? guestEmail,
     room: roomTitle,
-    date: date?.toISOString().split("T")[0],
-    time:time,
+    date: date.toISOString().split("T")[0],
+    time,
     players,
   }
 
-  // @ts-ignore
-  emailjs.send("service_4xit7mb", "template_3z1l6bo", templateParams)
-    .then(() => console.log("Email sent"))
-    .catch((err: unknown) => console.log(err))
-      
-      setMessage("Your reservation is successful! 🎉")
-      setSelectedSlot(null)
-      setGuestName("")
-      setGuestEmail("")
-      fetchBookings(date)
-    }
+    await emailjs.send(
+      "service_4xit7mb",
+      "template_3z1l6bo",
+      userTemplateParams
+    )
 
+  // -------------------------
+  // 2️⃣ Email adminu (NOVI TEMPLATE)
+  // -------------------------
+    emailjs.init("WGsQdLyQKpLPg2j1n")
+
+const adminTemplateParams = {
+  email: user?.email ?? guestEmail,
+  room: roomTitle,
+  date: date.toISOString().split("T")[0],
+  time,
+  players,
+}
+
+    await emailjs.send(
+      "service_0t7blpp",
+      "template_me39jym",
+      userTemplateParams
+    )
+
+    setMessage("Your reservation is successful! 🎉")
+  } catch (err) {
+    console.log("EMAIL ERROR:", err)
+    setMessage("Booking saved, but email failed.")
   }
+  setLoading(false)
+  setSelectedSlot(null)
+  setGuestName("")
+  setGuestEmail("")
+  fetchBookings(date)
+}
 
   return (
     <div className="flex flex-col items-center gap-10 py-20">
@@ -239,13 +268,20 @@ export default function BookingClient() {
               </div>
             )}
 
-            <button
-              onClick={bookSlot}
-              disabled={loading || !players}
-              className="px-6 py-3 bg-purple-600 rounded-xl text-white hover:brightness-110 transition disabled:opacity-50"
-            >
-              {loading ? "Booking..." : "Confirm booking"}
-            </button>
+        <button
+          onClick={bookSlot}
+          disabled={loading || !players}
+          className="px-6 py-3 bg-purple-600 rounded-xl text-white hover:brightness-110 transition disabled:opacity-50 flex items-center justify-center gap-2"
+        >
+          {loading ? (
+            <>
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              Booking...
+            </>
+          ) : (
+            "Confirm booking"
+          )}
+        </button>
           </div>
         )
       })()}
