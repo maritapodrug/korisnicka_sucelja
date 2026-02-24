@@ -8,7 +8,7 @@ import { rooms } from "@/lib/roomData"
 
 type Booking = {
   id: string
-  room: string
+  room_id: string
   date: string
   time: string
   players: number
@@ -66,7 +66,7 @@ function DeleteModal({
         <h2 className="text-xl font-bold">Delete Booking?</h2>
 
         <p>
-          Delete reservation for <strong>{booking.room}</strong>
+          Delete reservation for <strong>{booking.room_id}</strong>
           <br />
           {booking.date} — {booking.time}
         </p>
@@ -114,11 +114,12 @@ function isFutureBooking(b: Booking) {
     async function fetchBookings() {
       setLoading(true)
 
-      const { data, error } = await supabase
-        .from("bookings")
-        .select("*")
-        .eq("user_id", user?.id)
+const { data, error } = await supabase
+  .from("bookings")
+  .select("*")
+  .eq("user_id", user?.id)
 
+console.log("ALL BOOKINGS:", data)
       if (!error && data) {
         const future = data
           .filter(isFutureBooking)
@@ -150,8 +151,8 @@ function isFutureBooking(b: Booking) {
     return () => clearInterval(interval)
   }, [])
 
-  function getRoomLimits(roomTitle: string) {
-    const room = rooms.find(r => r.title === roomTitle)
+  function getRoomLimits(roomId: string) {
+    const room = rooms.find(r => r.id === roomId)
     return room ? { min: room.minPlayers, max: room.maxPlayers } : { min: 1, max: 99 }
   }
 
@@ -159,7 +160,7 @@ function isFutureBooking(b: Booking) {
     setBookings(prev =>
       prev.map(b => {
         if (b.id !== id) return b
-        const { min, max } = getRoomLimits(b.room)
+        const { min, max } = getRoomLimits(b.room_id)
         const next = Math.min(max, Math.max(min, b.players + delta))
         return { ...b, players: next }
       })
@@ -263,60 +264,64 @@ function isFutureBooking(b: Booking) {
           <div className="text-white/60">No upcoming bookings.</div>
         ) : (
           <div className="space-y-4">
-            {bookings.map(b => {
-              const { min, max } = getRoomLimits(b.room)
+    {bookings.map(b => {
+      const { min, max } = getRoomLimits(b.room_id)
+      const isPast = !isFutureBooking(b) // proveravamo da li je rezervacija prošla
 
-              return (
-                <div
-                  key={b.id}
-                  className="glass rounded-xl p-5 flex flex-col sm:flex-row justify-between gap-4"
-                >
-                  <div>
-                    <div className="text-purple-300 font-semibold text-lg">{b.room}</div>
-                    <div className="text-sm text-white/60">{b.date}</div>
-                    <div className="text-sm text-green-400">{b.time}</div>
-                  </div>
+      return (
+        <div
+          key={b.id}
+          className={`glass rounded-xl p-5 flex flex-col sm:flex-row justify-between gap-4 ${
+            isPast ? "opacity-50 pointer-events-none" : ""
+          }`}
+        >
+          <div>
+          <div className="text-purple-300 font-semibold text-lg">
+            {rooms.find(r => r.id === b.room_id)?.title || b.room_id}
+          </div>            <div className="text-sm text-white/60">{b.date}</div>
+            <div className="text-sm text-green-400">{b.time}</div>
+          </div>
 
-                  <div className="flex flex-col items-center gap-2">
+          <div className="flex flex-col items-center gap-2">
 
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => changePlayers(b.id, -1)}
-                        disabled={b.players <= min}
-                        className="px-2 py-1 bg-purple-600 rounded hover:bg-purple-700 disabled:opacity-30"
-                      >-</button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => changePlayers(b.id, -1)}
+                disabled={b.players <= min || isPast}
+                className="px-2 py-1 bg-purple-600 rounded hover:bg-purple-700 disabled:opacity-30"
+              >-</button>
 
-                      <div className="px-3 py-1 bg-white/5 rounded-xl border border-purple-500/20 text-purple-400 font-semibold">
-                        {b.players}
-                      </div>
+              <div className="px-3 py-1 bg-white/5 rounded-xl border border-purple-500/20 text-purple-400 font-semibold">
+                {b.players}
+              </div>
 
-                      <button
-                        onClick={() => changePlayers(b.id, 1)}
-                        disabled={b.players >= max}
-                        className="px-2 py-1 bg-purple-600 rounded hover:bg-purple-700 disabled:opacity-30"
-                      >+</button>
-                    </div>
+              <button
+                onClick={() => changePlayers(b.id, 1)}
+                disabled={b.players >= max || isPast}
+                className="px-2 py-1 bg-purple-600 rounded hover:bg-purple-700 disabled:opacity-30"
+              >+</button>
+            </div>
 
-                    {b.players !== b.originalPlayers && (
-                      <button
-                        onClick={() => confirmPlayersChange(b.id)}
-                        className="px-3 py-1 text-sm bg-purple-600 rounded hover:bg-purple-700"
-                      >
-                        Confirm Change
-                      </button>
-                    )}
-                  </div>
+            {b.players !== b.originalPlayers && !isPast && (
+              <button
+                onClick={() => confirmPlayersChange(b.id)}
+                className="px-3 py-1 text-sm bg-purple-600 rounded hover:bg-purple-700"
+              >
+                Confirm Change
+              </button>
+            )}
+      </div>
 
-                  <button
-                    onClick={() => setModalBooking(b)}
-                    disabled={deletingId === b.id}
-                    className="px-3 py-1 text-sm bg-red-600 rounded hover:bg-red-700 self-start"
-                  >
-                    {deletingId === b.id ? "Deleting..." : "Delete"}
-                  </button>
-                </div>
-              )
-            })}
+      <button
+        onClick={() => setModalBooking(b)}
+        disabled={deletingId === b.id || isPast}
+        className="px-3 py-1 text-sm bg-red-600 rounded hover:bg-red-700 self-start"
+      >
+        {deletingId === b.id ? "Deleting..." : "Delete"}
+      </button>
+    </div>
+  )
+})}
           </div>
         )}
       </div>

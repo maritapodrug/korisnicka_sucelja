@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import Calendar from "./calendar"
 import { supabase } from "@/lib/supabase"
 import { useUser } from "../hooks/useUser"
@@ -52,94 +52,86 @@ export default function BookingClient() {
   const roomsForDate = date ? getRoomsForDate(date) : []
 
   async function fetchBookings(selectedDate: Date) {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("bookings")
       .select("*")
-      .eq("date", selectedDate.toISOString().split("T")[0])
+      .eq("date", formatLocalDate(selectedDate))
 
-    if (!error && data) setBookings(data)
+    if (data) setBookings(data)
   }
 
   async function bookSlot() {
-  if (!date || !selectedSlot) return
+    if (!date || !selectedSlot) return
 
-  if (!user && (!guestName || !guestEmail)) {
-    setMessage("Please enter your name and email.")
-    return
+    if (!user && (!guestName || !guestEmail)) {
+      setMessage("Please enter your name and email.")
+      return
+    }
+
+    setLoading(true)
+    setMessage("")
+
+    const [roomId, time] = selectedSlot.split("|")
+    const roomObj = rooms.find((r) => r.id === roomId)
+
+    if (!roomObj) {
+      setMessage("Room not found.")
+      setLoading(false)
+      return
+    }
+
+    const { error } = await supabase
+      .from("bookings")
+      .insert({
+        user_id: user?.id ?? null,
+        guest_name: user ? null : guestName,
+        guest_email: user?.email ?? guestEmail,
+        room_id: roomId,
+        date: formatLocalDate(date),
+        time: time.trim(),
+        players: players ?? roomObj.minPlayers,
+      })
+
+    if (error) {
+      console.log(error)
+      setMessage(error.message)
+      setLoading(false)
+      return
+    }
+
+    try {
+      emailjs.init("FFMt7iEcrbqX8wRJH")
+
+      await emailjs.send("service_4xit7mb", "template_3z1l6bo", {
+        email: user?.email ?? guestEmail,
+        room: roomObj.title,
+        date: formatLocalDate(date),
+        time,
+        players,
+      })
+
+      emailjs.init("WGsQdLyQKpLPg2j1n")
+
+      await emailjs.send("service_0t7blpp", "template_me39jym", {
+        email: user?.email ?? guestEmail,
+        room: roomObj.title,
+        date: formatLocalDate(date),
+        time,
+        players,
+      })
+
+      setMessage("Your reservation is successful! 🎉")
+    } catch (err) {
+      console.log("EMAIL ERROR:", err)
+      setMessage("Booking saved, but email failed.")
+    }
+
+    setLoading(false)
+    setSelectedSlot(null)
+    setGuestName("")
+    setGuestEmail("")
+    fetchBookings(date)
   }
-
-  setLoading(true)
-  setMessage("")
-
-  const [roomTitle, time] = selectedSlot.split("-")
-
-const { data, error } = await supabase
-  .from("bookings")
-  .insert({
-    user_id: user?.id ?? null,
-    guest_name: user ? null : guestName,
-    guest_email: user ? null : guestEmail,
-    room: roomTitle,
-    date: formatLocalDate(date),    time,
-    players,
-  })
-  .select("id")
-
-  if (error || !data) {
-    setMessage("There is an error with this reservation.")
-    return
-  }
-
-try{
-  // -------------------------
-  // 1️⃣ Email korisniku
-  // -------------------------
-  emailjs.init("FFMt7iEcrbqX8wRJH")
-
-  const userTemplateParams = {
-    email: user?.email ?? guestEmail,
-    room: roomTitle,
-    date: date.toISOString().split("T")[0],
-    time,
-    players,
-  }
-
-    await emailjs.send(
-      "service_4xit7mb",
-      "template_3z1l6bo",
-      userTemplateParams
-    )
-
-  // -------------------------
-  // 2️⃣ Email adminu (NOVI TEMPLATE)
-  // -------------------------
-    emailjs.init("WGsQdLyQKpLPg2j1n")
-
-const adminTemplateParams = {
-  email: user?.email ?? guestEmail,
-  room: roomTitle,
-  date: date.toISOString().split("T")[0],
-  time,
-  players,
-}
-
-    await emailjs.send(
-      "service_0t7blpp",
-      "template_me39jym",
-      userTemplateParams
-    )
-
-    setMessage("Your reservation is successful! 🎉")
-  } catch (err) {
-    console.log("EMAIL ERROR:", err)
-    setMessage("Booking saved, but email failed.")
-  }
-  setLoading(false)
-  setSelectedSlot(null)
-  setGuestName("")
-  setGuestEmail("")
-  fetchBookings(date)
-}
 
   return (
     <div className="flex flex-col items-center gap-10 py-20">
@@ -163,41 +155,47 @@ const adminTemplateParams = {
         <div className="w-full max-w-2xl space-y-6">
           {roomsForDate.map((room) => (
             <div key={room.id} className="glass rounded-2xl p-5 space-y-3">
-              <h4 className="font-semibold tracking-wide text-purple-300">{room.title}</h4>
+              <h4 className="font-semibold tracking-wide text-purple-300">
+                {room.title}
+              </h4>
 
               <div className="flex flex-wrap gap-2">
                 {room.times.map((time) => {
-                  const value = `${room.title}-${time}`
-                  const existingBooking = bookings.find((b) => b.room === room.title && b.time === time)
-                  const isMine = user && existingBooking?.user_id === user.id
+                  const value = `${room.id}|${time}`
+
+                  const existingBooking = bookings.find(
+                    (b) =>
+                      b.room_id === room.id &&
+                      b.time?.trim() === time
+                  )
+
+                  const isMine =
+                    user && existingBooking?.user_id === user.id
+
                   const isTaken = existingBooking && !isMine
+
+                  const [h, m] = time.split(":").map(Number)
+                  const slotDateTime = new Date(date)
+                  slotDateTime.setHours(h, m, 0, 0)
+
+                  const isPast =
+                    slotDateTime.getTime() < new Date().getTime()
+
                   const active = selectedSlot === value
 
-                  // ⬇️ NEW: check if time already passed
-                  const now = new Date()
-
-                  const slotDateTime = new Date(date!)
-                  const [h, m] = time.split(":")
-                  slotDateTime.setHours(Number(h), Number(m), 0, 0)
-
-                  const isPast = slotDateTime < now
                   return (
                     <button
                       key={time}
                       disabled={isMine || isTaken || isPast}
                       onClick={() => {
-                        if (!isMine && !isTaken) {
+                        if (!isMine && !isTaken && !isPast) {
                           setSelectedSlot(value)
                           setPlayers(room.minPlayers)
                           setMessage("")
                         }
                       }}
                       className={`px-4 py-2 rounded-lg text-sm transition ${
-                        isMine
-                          ? "bg-purple-700 text-white cursor-not-allowed"
-                          : isTaken
-                          ? "bg-gray-700 text-gray-400 cursor-not-allowed"
-                          : isPast
+                        isMine || isTaken || isPast
                           ? "bg-gray-700 text-gray-400 cursor-not-allowed"
                           : active
                           ? "bg-purple-600 text-white"
@@ -215,89 +213,78 @@ const adminTemplateParams = {
       )}
 
       {selectedSlot && (() => {
-        const [roomTitle] = selectedSlot.split("-")
-        const roomData = roomsForDate.find((r) => r.title === roomTitle)
+        const [roomId] = selectedSlot.split("|")
+        const roomData = rooms.find((r) => r.id === roomId)
         if (!roomData) return null
 
         return (
           <div className="flex flex-col items-center gap-4">
 
-            <div className="text-gray-400 tracking-wide">Selected: {selectedSlot}</div>
+            <div className="text-gray-400 tracking-wide">
+              Selected: {selectedSlot}
+            </div>
 
-            <div className="flex flex-col items-center gap-3">
-              <div className="text-sm text-gray-300 tracking-wide">Number of players</div>
+            <div className="flex items-center gap-6 bg-white/5 px-6 py-3 rounded-2xl">
+              <button
+                onClick={() =>
+                  setPlayers((prev) =>
+                    prev && prev > roomData.minPlayers
+                      ? prev - 1
+                      : prev
+                  )
+                }
+                disabled={!players || players <= roomData.minPlayers}
+                className="w-10 h-10 bg-purple-600/20 rounded-xl disabled:opacity-30"
+              >
+                −
+              </button>
 
-              <div className="flex items-center gap-6 bg-white/5 backdrop-blur-md px-6 py-3 rounded-2xl border border-purple-500/20">
-                <button
-                  onClick={() => setPlayers((prev) => (prev && prev > roomData.minPlayers ? prev - 1 : prev))}
-                  disabled={!players || players <= roomData.minPlayers}
-                  className="w-10 h-10 rounded-xl bg-purple-600/20 hover:bg-purple-600/40 transition disabled:opacity-30"
-                >
-                  −
-                </button>
-
-                <div className="text-2xl font-semibold text-purple-400 w-10 text-center">
-                  {players ?? roomData.minPlayers}
-                </div>
-
-                <button
-                  onClick={() =>
-                    setPlayers((prev) =>
-                      prev ? (prev < roomData.maxPlayers ? prev + 1 : prev) : roomData.minPlayers
-                    )
-                  }
-                  disabled={players === roomData.maxPlayers}
-                  className="w-10 h-10 rounded-xl bg-purple-600/20 hover:bg-purple-600/40 transition disabled:opacity-30"
-                >
-                  +
-                </button>
+              <div className="text-2xl text-purple-400 w-10 text-center">
+                {players ?? roomData.minPlayers}
               </div>
 
-              <div className="text-xs text-gray-400">
-                Allowed: {roomData.minPlayers} – {roomData.maxPlayers} players
-              </div>
+              <button
+                onClick={() =>
+                  setPlayers((prev) =>
+                    prev && prev < roomData.maxPlayers
+                      ? prev + 1
+                      : prev
+                  )
+                }
+                disabled={players === roomData.maxPlayers}
+                className="w-10 h-10 bg-purple-600/20 rounded-xl disabled:opacity-30"
+              >
+                +
+              </button>
             </div>
 
             {!user && (
               <div className="flex flex-col gap-3 w-full max-w-xs mt-2">
-
-                <p className="text-xs text-purple-300 text-center">
-                  Booking as guest
-                </p>
-
                 <input
                   type="text"
                   placeholder="Full name"
                   value={guestName}
-                  onChange={(e)=>setGuestName(e.target.value)}
-                  className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 focus:outline-none focus:border-purple-500"
+                  onChange={(e) => setGuestName(e.target.value)}
+                  className="px-4 py-2 rounded-lg bg-white/5"
                 />
 
                 <input
                   type="email"
                   placeholder="Email address"
                   value={guestEmail}
-                  onChange={(e)=>setGuestEmail(e.target.value)}
-                  className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 focus:outline-none focus:border-purple-500"
+                  onChange={(e) => setGuestEmail(e.target.value)}
+                  className="px-4 py-2 rounded-lg bg-white/5"
                 />
-
               </div>
             )}
 
-        <button
-          onClick={bookSlot}
-          disabled={loading || !players}
-          className="px-6 py-3 bg-purple-600 rounded-xl text-white hover:brightness-110 transition disabled:opacity-50 flex items-center justify-center gap-2"
-        >
-          {loading ? (
-            <>
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              Booking...
-            </>
-          ) : (
-            "Confirm booking"
-          )}
-        </button>
+            <button
+              onClick={bookSlot}
+              disabled={loading || !players}
+              className="px-6 py-3 bg-purple-600 rounded-xl text-white disabled:opacity-50"
+            >
+              {loading ? "Booking..." : "Confirm booking"}
+            </button>
           </div>
         )
       })()}
@@ -307,7 +294,6 @@ const adminTemplateParams = {
           {message}
         </div>
       )}
-
     </div>
   )
 }
