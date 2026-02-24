@@ -183,10 +183,14 @@ export default function BookingClient() {
 
                   const active = selectedSlot === value
 
+                let tooltip = ""
+                if (isTaken) tooltip = "Already reserved"
+
                   return (
                     <button
                       key={time}
                       disabled={isMine || isTaken || isPast}
+                      title={tooltip}
                       onClick={() => {
                         if (!isMine && !isTaken && !isPast) {
                           setSelectedSlot(value)
