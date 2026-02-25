@@ -217,7 +217,7 @@ export default function BookingClient() {
       )}
 
       {selectedSlot && (() => {
-        const [roomId] = selectedSlot.split("|")
+        const [roomId, time] = selectedSlot.split("|")
         const roomData = rooms.find((r) => r.id === roomId)
         if (!roomData) return null
 
@@ -225,7 +225,7 @@ export default function BookingClient() {
           <div className="flex flex-col items-center gap-4">
 
             <div className="text-gray-400 tracking-wide">
-              Selected: {selectedSlot}
+              Selected: {roomData?.title}-{time}
             </div>
 
             <div className="flex items-center gap-6 bg-white/5 px-6 py-3 rounded-2xl">
@@ -261,6 +261,10 @@ export default function BookingClient() {
                 +
               </button>
             </div>
+
+        <div className="text-xs text-gray-400">
+          Allowed players: {roomData.minPlayers} – {roomData.maxPlayers}
+        </div>
 
             {!user && (
               <div className="flex flex-col gap-3 w-full max-w-xs mt-2">

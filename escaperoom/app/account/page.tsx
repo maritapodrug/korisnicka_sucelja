@@ -16,21 +16,6 @@ type Booking = {
   originalPlayers?: number
 }
 
-function BookingSkeleton() {
-  return (
-    <div className="w-full max-w-3xl space-y-4 animate-pulse">
-      {[...Array(3)].map((_, i) => (
-        <div key={i} className="glass rounded-xl p-5 space-y-3">
-          <div className="h-5 w-1/2 bg-white/20 rounded" />
-          <div className="h-4 w-1/3 bg-white/10 rounded" />
-          <div className="h-px bg-white/10" />
-          <div className="h-4 w-1/4 bg-white/10 rounded" />
-        </div>
-      ))}
-    </div>
-  )
-}
-
 function DeleteModal({
   booking,
   onConfirm,
@@ -59,14 +44,17 @@ function DeleteModal({
       />
 
       <div
-        className={`relative bg-gray-800 text-white p-6 rounded-xl max-w-sm w-full space-y-4 z-10 transform transition-all duration-300 ${
+        className={`relative glass border border-red-500/30 p-6 rounded-2xl max-w-sm w-full space-y-4 z-10 transform transition-all duration-300 ${
           show ? "scale-100 opacity-100" : "scale-95 opacity-0"
         }`}
       >
-        <h2 className="text-xl font-bold">Delete Booking?</h2>
+        <h2 className="text-xl font-bold text-white">Delete Booking?</h2>
 
-        <p>
-          Delete reservation for <strong>{booking.room_id}</strong>
+        <p className="text-white/70">
+          Delete reservation for{" "}
+          <strong className="text-purple-400">
+            {rooms.find(r => r.id === booking.room_id)?.title || booking.room_id}
+          </strong>
           <br />
           {booking.date} — {booking.time}
         </p>
@@ -74,14 +62,14 @@ function DeleteModal({
         <div className="flex justify-end gap-4">
           <button
             onClick={handleClose}
-            className="px-4 py-2 rounded bg-gray-600 hover:bg-gray-700 transition"
+            className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition"
           >
             Cancel
           </button>
 
           <button
             onClick={onConfirm}
-            className="px-4 py-2 rounded bg-red-600 hover:bg-red-700 transition"
+            className="px-4 py-2 rounded-lg bg-red-600/80 hover:bg-red-600 transition"
           >
             Delete
           </button>
@@ -100,13 +88,12 @@ export default function AccountPage() {
   const [modalBooking, setModalBooking] = useState<Booking | null>(null)
   const [message, setMessage] = useState<string | null>(null)
 
-function isFutureBooking(b: Booking) {
-  const [year, month, day] = b.date.split("-").map(Number)
-  const [h, m] = b.time.split(":").map(Number)
-
-  const dt = new Date(year, month - 1, day, h, m, 0, 0)
-  return dt >= new Date()
-}
+  function isFutureBooking(b: Booking) {
+    const [year, month, day] = b.date.split("-").map(Number)
+    const [h, m] = b.time.split(":").map(Number)
+    const dt = new Date(year, month - 1, day, h, m, 0, 0)
+    return dt >= new Date()
+  }
 
   useEffect(() => {
     if (!user) return
@@ -114,12 +101,11 @@ function isFutureBooking(b: Booking) {
     async function fetchBookings() {
       setLoading(true)
 
-const { data, error } = await supabase
-  .from("bookings")
-  .select("*")
-  .eq("user_id", user?.id)
+      const { data, error } = await supabase
+        .from("bookings")
+        .select("*")
+        .eq("user_id", user?.id)
 
-console.log("ALL BOOKINGS:", data)
       if (!error && data) {
         const future = data
           .filter(isFutureBooking)
@@ -141,15 +127,6 @@ console.log("ALL BOOKINGS:", data)
 
     fetchBookings()
   }, [user])
-
-  // auto remove expired bookings every 30s
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setBookings(prev => prev.filter(isFutureBooking))
-    }, 30000)
-
-    return () => clearInterval(interval)
-  }, [])
 
   function getRoomLimits(roomId: string) {
     const room = rooms.find(r => r.id === roomId)
@@ -219,7 +196,7 @@ console.log("ALL BOOKINGS:", data)
   if (!user) {
     return (
       <div className="flex flex-col items-center justify-center py-32 gap-6">
-        <h1 className="text-2xl font-bold">You are not logged in</h1>
+        <h1 className="text-2xl font-bold text-white">You are not logged in</h1>
         <Link
           href="/login"
           className="px-6 py-3 bg-purple-600 rounded-xl text-white hover:brightness-110 transition"
@@ -231,24 +208,24 @@ console.log("ALL BOOKINGS:", data)
   }
 
   return (
-    <div className="flex flex-col md:flex-row w-full max-w-5xl gap-8 py-20 px-6">
+    <div className="w-full max-w-6xl mx-auto flex flex-col md:flex-row gap-10 py-24 px-6">
 
       {/* SIDEBAR */}
-      <div className="flex flex-col items-center md:items-start w-full md:w-64 bg-[#1a0d2a] p-6 rounded-2xl space-y-6">
+      <div className="w-full md:w-72 glass rounded-3xl p-8 flex flex-col items-center md:items-start gap-6 border border-purple-500/20">
 
-        <div className="w-20 h-20 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold text-2xl">
+        <div className="w-24 h-24 rounded-full bg-gradient-to-br from-purple-500 to-fuchsia-600 flex items-center justify-center text-white font-bold text-2xl shadow-lg shadow-purple-600/30">
           {user.user_metadata?.first_name && user.user_metadata?.last_name
             ? `${user.user_metadata.first_name[0]}${user.user_metadata.last_name[0]}`
             : user.email?.slice(0,2).toUpperCase()}
         </div>
 
-        <div className="text-white font-semibold text-lg text-center md:text-left">
+        <div className="text-xl font-semibold text-white text-center md:text-left">
           {user.user_metadata?.first_name && user.user_metadata?.last_name
             ? `${user.user_metadata.first_name} ${user.user_metadata.last_name}`
             : "No Name"}
         </div>
 
-        <div className="text-white/60 text-sm break-all">
+        <div className="text-white/50 text-sm break-all">
           {user.email}
         </div>
       </div>
@@ -256,72 +233,74 @@ console.log("ALL BOOKINGS:", data)
       {/* BOOKINGS */}
       <div className="flex-1 space-y-8">
 
-        <h1 className="text-3xl font-bold text-white">My Bookings</h1>
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-white to-purple-400 bg-clip-text text-transparent">
+          My Bookings
+        </h1>
 
         {loading ? (
-          <BookingSkeleton />
+          <div className="text-white/60">Loading...</div>
         ) : bookings.length === 0 ? (
-          <div className="text-white/60">No upcoming bookings.</div>
+          <div className="glass rounded-2xl p-8 text-center text-white/60 border border-white/5">
+            No upcoming bookings.
+          </div>
         ) : (
           <div className="space-y-4">
-    {bookings.map(b => {
-      const { min, max } = getRoomLimits(b.room_id)
-      const isPast = !isFutureBooking(b) // proveravamo da li je rezervacija prošla
+            {bookings.map(b => {
+              const { min, max } = getRoomLimits(b.room_id)
 
-      return (
-        <div
-          key={b.id}
-          className={`glass rounded-xl p-5 flex flex-col sm:flex-row justify-between gap-4 ${
-            isPast ? "opacity-50 pointer-events-none" : ""
-          }`}
-        >
-          <div>
-          <div className="text-purple-300 font-semibold text-lg">
-            {rooms.find(r => r.id === b.room_id)?.title || b.room_id}
-          </div>            <div className="text-sm text-white/60">{b.date}</div>
-            <div className="text-sm text-green-400">{b.time}</div>
-          </div>
+              return (
+                <div
+                  key={b.id}
+                  className="glass rounded-2xl p-6 flex flex-col sm:flex-row justify-between gap-6 border border-white/5 hover:border-purple-500/30 hover:-translate-y-1 transition"
+                >
+                  <div>
+                    <div className="text-xl font-semibold text-purple-300">
+                      {rooms.find(r => r.id === b.room_id)?.title || b.room_id}
+                    </div>
+                    <div className="text-sm text-white/50">{b.date}</div>
+                    <div className="text-sm text-purple-400 font-medium">{b.time}</div>
+                  </div>
 
-          <div className="flex flex-col items-center gap-2">
+                  <div className="flex flex-col items-center gap-3">
 
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => changePlayers(b.id, -1)}
-                disabled={b.players <= min || isPast}
-                className="px-2 py-1 bg-purple-600 rounded hover:bg-purple-700 disabled:opacity-30"
-              >-</button>
+                    <div className="flex items-center gap-3 bg-black/30 px-3 py-2 rounded-xl border border-purple-500/20">
+                      <button
+                        onClick={() => changePlayers(b.id, -1)}
+                        disabled={b.players <= min}
+                        className="w-8 h-8 flex items-center justify-center bg-purple-600/20 rounded-lg hover:bg-purple-600/40 transition disabled:opacity-30"
+                      >-</button>
 
-              <div className="px-3 py-1 bg-white/5 rounded-xl border border-purple-500/20 text-purple-400 font-semibold">
-                {b.players}
-              </div>
+                      <div className="min-w-[36px] text-center px-3 py-1 rounded-lg bg-black/40 border border-purple-500/30 text-purple-300 font-semibold">
+                        {b.players}
+                      </div>
 
-              <button
-                onClick={() => changePlayers(b.id, 1)}
-                disabled={b.players >= max || isPast}
-                className="px-2 py-1 bg-purple-600 rounded hover:bg-purple-700 disabled:opacity-30"
-              >+</button>
-            </div>
+                      <button
+                        onClick={() => changePlayers(b.id, 1)}
+                        disabled={b.players >= max}
+                        className="w-8 h-8 flex items-center justify-center bg-purple-600/20 rounded-lg hover:bg-purple-600/40 transition disabled:opacity-30"
+                      >+</button>
+                    </div>
 
-            {b.players !== b.originalPlayers && !isPast && (
-              <button
-                onClick={() => confirmPlayersChange(b.id)}
-                className="px-3 py-1 text-sm bg-purple-600 rounded hover:bg-purple-700"
-              >
-                Confirm Change
-              </button>
-            )}
-      </div>
+                    {b.players !== b.originalPlayers && (
+                      <button
+                        onClick={() => confirmPlayersChange(b.id)}
+                        className="px-4 py-1.5 text-sm bg-gradient-to-r from-purple-600 to-fuchsia-600 rounded-lg hover:brightness-110 transition"
+                      >
+                        Confirm Change
+                      </button>
+                    )}
+                  </div>
 
-      <button
-        onClick={() => setModalBooking(b)}
-        disabled={deletingId === b.id || isPast}
-        className="px-3 py-1 text-sm bg-red-600 rounded hover:bg-red-700 self-start"
-      >
-        {deletingId === b.id ? "Deleting..." : "Delete"}
-      </button>
-    </div>
-  )
-})}
+                  <button
+                    onClick={() => setModalBooking(b)}
+                    disabled={deletingId === b.id}
+                    className="px-4 py-1.5 text-sm bg-red-600/80 rounded-lg hover:bg-red-600 transition self-start"
+                  >
+                    {deletingId === b.id ? "Deleting..." : "Delete"}
+                  </button>
+                </div>
+              )
+            })}
           </div>
         )}
       </div>
@@ -335,11 +314,10 @@ console.log("ALL BOOKINGS:", data)
       )}
 
       {message && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-black/80 text-white px-6 py-3 rounded-xl backdrop-blur">
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 glass px-6 py-3 rounded-xl border border-purple-500/30 shadow-lg">
           {message}
         </div>
       )}
-
     </div>
   )
 }
