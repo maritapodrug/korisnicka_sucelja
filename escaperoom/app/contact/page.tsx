@@ -199,9 +199,10 @@ async function handleSubmit(e: React.FormEvent) {
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-700/30 to-black/30 flex items-center justify-center">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
-                    <path d="M3 7h18" stroke="#E9D5FF" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M5 7v10a2 2 0 002 2h10" stroke="#E9D5FF" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
+                    <circle cx="12" cy="12" r="9" stroke="#E9D5FF" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                      <path d="M12 7v5l3.5 1.8" stroke="#E9D5FF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                      <circle cx="12" cy="12" r="0.7" fill="#E9D5FF" />
+                    </svg>
                 </div>
 
                 <div>

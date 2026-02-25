@@ -162,8 +162,6 @@ export default function FeaturedRooms({ rooms }: Props) {
                     </button>
                   </Link>
                 </div>
-
-               
               </div>
             </div>
           </div>

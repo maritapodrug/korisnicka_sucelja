@@ -211,99 +211,99 @@ useEffect(() => {
         </div>
       </header>
 
-      {/* MOBILE MENU */}
       {menuOpen && (
-        <div className="fixed inset-0 z-[999] bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center text-center gap-10">
-          {links.map(link => {
-            const isRooms = link.name === "ROOMS"
-            const isActive = link.name === activeSection
+  <div className="fixed inset-0 z-[999] bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center text-center gap-6 px-6 sm:gap-10">
+    {links.map(link => {
+      const isRooms = link.name === "ROOMS"
+      const isActive = link.name === activeSection
 
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={(e) => {
-                  setMenuOpen(false)
-                  if (isRooms) {
-                    e.preventDefault()
-                    setTimeout(() => scrollToRooms(), 50)
-                  }
-                }}
-                className={`w-full py-6 text-xl tracking-[0.3em] text-white flex items-center justify-center transition-all duration-300 hover:bg-white/10 hover:text-[#ca7ef6] ${isActive && "text-[#ca7ef6]"}`}
-              >
-                {link.name}
-              </Link>
-            )
-          })}
+      return (
+        <Link
+          key={link.href}
+          href={link.href}
+          onClick={(e) => {
+            setMenuOpen(false)
+            if (isRooms) {
+              e.preventDefault()
+              setTimeout(() => scrollToRooms(), 50)
+            }
+          }}
+          className={`
+            w-full py-3
+            text-base sm:text-xl                       /* manje na mobitelu, veće na desktopu */
+            font-medium                                 /* malo tanji nego bold */
+            tracking-[0.12em] sm:tracking-[0.28em]     /* smanjen tracking na mobitelu */
+            uppercase
+            text-white
+            flex items-center justify-center
+            transition-all duration-300
+            hover:bg-white/10 hover:text-[#ca7ef6]
+            ${isActive ? "text-[#ca7ef6]" : ""}
+          `}
+        >
+          {link.name}
+        </Link>
+      )
+    })}
 
-          {/* MOBILE AUTH */}
-          {user ? (
-            <div className="flex flex-col items-center gap-4">
-              <button
-                onClick={() => {
-                  router.push("/account")
-                  setMenuOpen(false)
-                }}
-                className="
-                  w-16 h-16 rounded-full bg-purple-600 text-white
-                  flex items-center justify-center font-semibold text-lg uppercase
-                  transition-transform duration-200 ease-in-out
-                  hover:scale-110 hover:shadow-lg
-                "
-              >
-                {getInitials(user.email!)}
-              </button>
-              {user.user_metadata?.first_name && user.user_metadata?.last_name
-                  ? `Hello ${user.user_metadata.first_name}!`
-                  : user.email}
-              <button
-                onClick={() => {
-                  logout()
-                  setMenuOpen(false)
-                }}
-                className="
-                  w-full
-                  py-4
-                  text-white
-                  font-semibold
-                  text-lg
-                  hover:text-red-500
-                  transition-all
-                  shadow-md
-                "
-              >
-                Logout
-              </button>
-            </div>
-          ) : (
-            <div className="flex flex-col gap-4 w-full px-10">
-              <Link
-                href="/login"
-                onClick={() => setMenuOpen(false)}
-                className="py-4 rounded-xl border border-white/20 text-white text-lg hover:bg-white/10"
-              >
-                LOGIN
-              </Link>
+    {/* MOBILE AUTH */}
+    {user ? (
+      <div className="flex flex-col items-center gap-3 mt-2">
+        <button
+          onClick={() => {
+            router.push("/account")
+            setMenuOpen(false)
+          }}
+          className="
+            w-12 h-12 rounded-full bg-purple-600 text-white
+            flex items-center justify-center font-semibold text-sm uppercase
+            transition-transform duration-200 ease-in-out
+            hover:scale-105 hover:shadow-lg
+          "
+        >
+          {getInitials(user.email!)}
+        </button>
+        <div className="text-sm text-white/90">{user.user_metadata?.first_name ? `Hello ${user.user_metadata.first_name}!` : user.email}</div>
+        <button
+          onClick={() => {
+            logout()
+            setMenuOpen(false)
+          }}
+          className="w-full py-3 text-white font-medium text-sm hover:text-red-500 transition-all"
+        >
+          Logout
+        </button>
+      </div>
+    ) : (
+      <div className="flex flex-col gap-3 w-full px-6">
+        <Link
+          href="/login"
+          onClick={() => setMenuOpen(false)}
+          className="w-fit mx-auto px-8 py-3 rounded-xl border border-white/20 text-white text-sm hover:bg-white/10 text-center"
+        >
+          LOGIN
+        </Link>
 
-              <Link
-                href="/signup"
-                onClick={() => setMenuOpen(false)}
-                className="py-4 rounded-xl bg-[#ca7ef6] text-white text-lg font-semibold"
-              >
-                SIGN UP
-              </Link>
-            </div>
-          )}
+        <Link
+          href="/signup"
+          onClick={() => setMenuOpen(false)}
+          className="w-fit mx-auto px-8 py-3 rounded-xl bg-[#ca7ef6] text-white text-sm font-semibold text-center"
+        >
+          SIGN UP
+        </Link>
+      </div>
+    )}
 
-          {/* CLOSE */}
-          <button
-            onClick={() => setMenuOpen(false)}
-            className="absolute top-6 right-6 text-3xl"
-          >
-            ✕
-          </button>
-        </div>
-      )}
+    {/* CLOSE */}
+    <button
+      onClick={() => setMenuOpen(false)}
+      className="absolute top-4 right-4 text-2xl sm:text-3xl text-white/90"
+      aria-label="Close menu"
+    >
+      ✕
+    </button>
+  </div>
+)}
     </>
   )
 }

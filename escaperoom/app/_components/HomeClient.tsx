@@ -136,33 +136,49 @@ export default function HomeClient({ rooms, steps = [], testimonials = [] }: Pro
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,var(--color-brand)/10,transparent_70%)]" />
         <h2 className="text-center text-4xl tracking-[0.3em] font-bold mb-20">VISIT US</h2> 
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 px-8 relative z-10"> 
-          <div className="space-y-14"> {/* Address, phone, hours (same as before) */} 
+          <div className="space-y-14"> 
+            {/* Address, phone, hours */} 
             <div className="flex gap-6 items-start"> 
               <div className="w-auto h-auto rounded-xl bg-[var(--color-brand)]/10 flex items-center justify-center"> 
-              <Image src="/icons/location.png" alt="" width={24} height={24} /> 
+              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-700/30 to-black/30 flex items-center justify-center">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+                  <path d="M12 11.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="#E9D5FF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M21 10c0 6-9 12-9 12S3 16 3 10a9 9 0 0118 0z" stroke="#E9D5FF" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
               </div> 
               <div> 
-                <p className="uppercase tracking-widest text-xs text-[var(--color-brand)] mb-2">Visit Us</p> 
-                <p className="text-lg font-semibold">Ulica Slobode 14</p> <p className="text-gray-400">Split, Croatia</p> 
+                <p className="uppercase tracking-widest text-sm text-[var(--color-brand)] mb-2">Visit Us</p> 
+                <p className="text-2xl font-bold">Ulica Slobode 14</p> <p className="text-lg text-gray-400">Split, Croatia</p> 
                 </div> 
               </div> {/* Phone */} 
-              <div className="flex gap-6 items-start"> 
+              <div className="flex gap-4 items-start"> 
                 <div className="w-auto h-auto rounded-xl bg-[var(--color-brand)]/10 flex items-center justify-center"> 
-                <Image src="/icons/phone.png" alt="" width={24} height={24} /> 
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-700/30 to-black/30 flex items-center justify-center">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+                  <path d="M22 16.92V20a1 1 0 01-1.11 1 19.8 19.8 0 01-8.63-3.16 19.5 19.5 0 01-6-6A19.8 19.8 0 013 3.11 1 1 0 014 2h3.09a1 1 0 01.95.68l1.2 4.03a1 1 0 01-.25.95L8.7 9.7a14 14 0 006 6l1.03-1.03a1 1 0 01.95-.25l4.03 1.2A1 1 0 0122 16.92z" stroke="#E9D5FF" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
                 </div> 
                 <div> 
-                  <p className="uppercase tracking-widest text-xs text-[var(--color-brand)] mb-2">Give Us A Call</p>
-                   <p className="text-lg font-semibold">(+385) 11 223 344</p> 
+                  <p className="uppercase tracking-widest text-sm text-[var(--color-brand)] mb-2">Give Us A Call</p>
+                   <p className="text-2xl font-bold">(+385) 11 223 344</p> 
                    </div> 
                    </div> 
               {/* Hours */} 
               <div className="flex gap-6 items-start"> 
                 <div className="w-auto h-auto rounded-xl bg-[var(--color-brand)]/10 flex items-center justify-center"> 
-                <Image src="/icons/clock.png" alt="" width={24} height={24} /> 
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-700/30 to-black/30 flex items-center justify-center">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+                    <circle cx="12" cy="12" r="9" stroke="#E9D5FF" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                      <path d="M12 7v5l3.5 1.8" stroke="#E9D5FF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                      <circle cx="12" cy="12" r="0.7" fill="#E9D5FF" />
+                    </svg>
+                </div>
                 </div> 
                 <div> 
-                  <p className="uppercase tracking-widest text-xs text-[var(--color-brand)] mb-2">Open Hours</p> 
-                  <p className="text-lg font-semibold">9:00am – 11:00pm</p> <p className="text-gray-400">Every day</p> 
+                  <p className="uppercase tracking-widest text-sm text-[var(--color-brand)] mb-2">Open Hours</p> 
+                  <p className="text-2xl font-bold">9:00am – 11:00pm</p> <p className="text-lg text-gray-400">Every day</p> 
                   </div> 
                   </div> 
                   </div> 
