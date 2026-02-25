@@ -26,21 +26,4 @@
 - [**Final report**](https://lavish-shoe-71b.notion.site/EscapeRoom-Final-Project-Review-3106f9551edc80678863d1c753b51a08?pvs=143) 
 <!-- Add more assignments as necessary -->
 
-## Project Requirements
 
-### Web Application Requirements
-
-- [ ] The application will be used from a web browser
-- [ ] It will be accessible on devices of different sizes
-- [ ] Users can search/filter products or services
-- [ ] The application will support user login for showing private content
-- [ ] One of the public pages will be a blog containing multiple posts with diverse content (images, videos, code snippets)
-- [ ] Part of the application's content will be stored in a remote headless CMS system
-
-### Project Demonstration
-
-- [ ] Show the production version of the project or produce a video demonstrating the above requirements
-- [ ] The production version will be deployed online (on an appropriate cloud platform [Vercel](https://vercel.com), [Netlify](https://www.netlify.com/) or personal VPS)
-- [ ] Conduct usablity evaluation of your web application
-- [ ] Analyze the application's performance ([PageSpeed Insights](https://pagespeed.web.dev/))
-- [ ] The analysis results will be part of the final report
