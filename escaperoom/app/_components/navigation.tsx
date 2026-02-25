@@ -68,14 +68,14 @@ useEffect(() => {
     const bottom = top + roomsEl.offsetHeight
 
     if (top <= 120 && bottom > 120) {
-      setActiveSection("ROOMS") // unutar rooms sekcije
+      setActiveSection("ROOMS") 
     } else {
-      setActiveSection("HOME") // iznad ili ispod rooms
+      setActiveSection("HOME") 
     }
   }
   
   window.addEventListener("scroll", handleScroll)
-  handleScroll() // odmah postavi stanje
+  handleScroll() 
   return () => window.removeEventListener("scroll", handleScroll)
 }, [pathname])
   useEffect(() => {

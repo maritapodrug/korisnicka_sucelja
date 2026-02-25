@@ -167,20 +167,6 @@ async function handleSubmit(e: React.FormEvent) {
 
           {/* RIGHT: CONTACT CARDS */}
           <aside className="space-y-6">
-            <div className="p-6 rounded-2xl bg-white/4 border border-white/6 shadow-sm flex items-center gap-4">
-              {/* location icon (inline svg) */}
-              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-700/30 to-black/30 flex items-center justify-center">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
-                  <path d="M12 11.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="#E9D5FF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M21 10c0 6-9 12-9 12S3 16 3 10a9 9 0 0118 0z" stroke="#E9D5FF" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
-              <div>
-                <div className="text-sm text-gray-300 uppercase tracking-widest">Visit</div>
-                <div className="font-semibold text-white">Ulica Slobode 14</div>
-                <div className="text-sm text-gray-400"></div>
-              </div>
-            </div>
 
             <div className="p-6 rounded-2xl bg-white/4 border border-white/6 shadow-sm flex items-center gap-4">
               <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-700/30 to-black/30 flex items-center justify-center">
@@ -191,25 +177,40 @@ async function handleSubmit(e: React.FormEvent) {
               <div>
                 <div className="text-sm text-gray-300 uppercase tracking-widest">Call</div>
                 <a href="tel:+38511223344" className="font-semibold text-white hover:text-purple-300">(+385) 11 223 344</a>
-                <div className="text-sm text-gray-400">Available 9:00 — 23:00</div>
+                
               </div>
             </div>
 
-            <div className="p-6 rounded-2xl bg-white/4 border border-white/6 shadow-sm">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-700/30 to-black/30 flex items-center justify-center">
+            <div className="p-6 rounded-2xl bg-white/4 border border-white/6 shadow-sm flex items-center gap-4">
+              {/* location icon (inline svg) */}
+              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-700/30 to-black/30 flex items-center justify-center">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
                     <circle cx="12" cy="12" r="9" stroke="#E9D5FF" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
                       <path d="M12 7v5l3.5 1.8" stroke="#E9D5FF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                       <circle cx="12" cy="12" r="0.7" fill="#E9D5FF" />
                     </svg>
                 </div>
-
-                <div>
+              <div>
                   <div className="text-sm text-gray-300 uppercase tracking-widest">Hours</div>
                   <div className="font-semibold text-white">9:00am – 11:00pm</div>
                   <div className="text-sm text-gray-400">Open every day</div>
                 </div>
+            </div>
+
+            <div className="p-6 rounded-2xl bg-white/4 border border-white/6 shadow-sm">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-700/30 to-black/30 flex items-center justify-center">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+                  <path d="M12 11.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="#E9D5FF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M21 10c0 6-9 12-9 12S3 16 3 10a9 9 0 0118 0z" stroke="#E9D5FF" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+                <div>
+                <div className="text-sm text-gray-300 uppercase tracking-widest">Visit</div>
+                <div className="font-semibold text-white">Ulica Slobode 14</div>
+                <div className="text-sm text-gray-400"></div>
+                </div>
+
               </div>
 
               {/* small map preview */}

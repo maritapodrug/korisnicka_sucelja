@@ -38,6 +38,15 @@ export default function FeaturedRooms({ rooms }: Props) {
     img.src = src
   }, [])
 
+  function getDifficulty(details: string) {
+    const d = details?.toLowerCase() ?? ""
+    if (d.includes("easy")) return "Easy"
+    if (d.includes("medium-hard") || d.includes("medium hard") || d.includes("medium")) return "Medium"
+    if (d.includes("hard")) return "Hard"
+    return "Unknown"
+  }
+
+
   return (
     <section id="rooms" className="relative py-32 bg-gradient-to-b from-[#120018] to-[#05000a]">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 px-8 relative z-10">
@@ -57,6 +66,14 @@ export default function FeaturedRooms({ rooms }: Props) {
                 placeholder={room.blurDataURL ? "blur" : undefined}
                 blurDataURL={room.blurDataURL}
               />
+              <div className="absolute left-3 bottom-3 flex gap-2">
+                <div className="bg-black/50 text-xs text-white px-2 py-1 rounded-md backdrop-blur-sm">
+                  👥 {room.minPlayers}–{room.maxPlayers}
+                </div>
+                <div className="bg-black/50 text-xs text-white px-2 py-1 rounded-md backdrop-blur-sm">
+                  🧠 {getDifficulty(room.details)}
+                </div>
+              </div>
             </div>
 
             <div className="p-8">
