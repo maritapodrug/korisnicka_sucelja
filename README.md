@@ -23,7 +23,7 @@
 - Link to Assignment 3:  [**EscapeRoom**](https://github.com/maritapodrug/korisnicka_sucelja/blob/main/escaperoom), [**Link to page**](https://korisnicka-sucelja-theta.vercel.app/)
 - Link to Assignment 4:  [**High-fidelity prototype**](https://github.com/maritapodrug/korisnicka_sucelja/blob/main/figma-prototype)
 - Link to Assignment 5:  [**Dynamic routes, data fetching**](https://github.com/maritapodrug/korisnicka_sucelja/blob/main/escaperoom), [**Link to page**](https://korisnicka-sucelja-theta.vercel.app/)
-
+- [**Final report**](https://lavish-shoe-71b.notion.site/EscapeRoom-Final-Project-Review-3106f9551edc80678863d1c753b51a08?pvs=143) 
 <!-- Add more assignments as necessary -->
 
 ## Project Requirements
