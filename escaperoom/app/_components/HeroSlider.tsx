@@ -28,7 +28,7 @@ export default function HeroSlider() {
 
   return (
     // na mobilu manja visina, na desktopu visoka hero
-    <section className="relative h-[60vh] sm:h-[92vh] flex items-center justify-center overflow-hidden bg-black">
+    <section className="relative min-h-[calc(100vh-80px)] pt-20 flex items-center justify-center overflow-hidden bg-black">
       <div className="absolute inset-0 z-0">
         {slides.map((src, i) => (
           <Image
@@ -47,7 +47,7 @@ export default function HeroSlider() {
               " object-center sm:object-center"
             }
             // opcionalno: ako želiš drugačiji fokus na mobilu
-            // style={{ objectPosition: 'center 20%' }} 
+             style={{ objectPosition: 'center 20%' }} 
           />
         ))}
       </div>
