@@ -8,8 +8,8 @@
 
 ### Semester Project
 
-- Link to your production version:  <!-- Replace with actual URL -->
-- Link to your final report:  <!-- Replace with actual URL -->
+- Link to your production version: [**EscapeRoom**] <!-- ([Replace with actual URL](https://korisnicka-sucelja-theta.vercel.app/)) -->
+- Link to your final report: [**Final Project Review**] <!-- (https://lavish-shoe-71b.notion.site/EscapeRoom-Final-Project-Review-3106f9551edc80678863d1c753b51a08?pvs=143)  -->
 <!-- Add more as necessary -->
 
 ### Semester Assignments
