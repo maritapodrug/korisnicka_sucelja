@@ -1,4 +1,3 @@
-// app/_components/HomeClient.tsx
 "use client"
 
 import { useState, useEffect } from "react"
@@ -21,7 +20,6 @@ export default function HomeClient({ rooms, steps = [], testimonials = [] }: Pro
   const router = useRouter()
   const room = rooms.find(r => r.id === selectedRoom)
 
-  // (opcionalno) you can prefetch popular routes on mount
   useEffect(() => {
     router.prefetch("/rooms")
     router.prefetch("/booknow")
@@ -73,7 +71,7 @@ export default function HomeClient({ rooms, steps = [], testimonials = [] }: Pro
       {/* FEATURED ROOMS */}
       <FeaturedRooms rooms={rooms} onSelectRoom={setSelectedRoom} />
 
-      {/* HOW IT WORKS (server content could be here too, but small static content is fine client-side) */}
+      {/* HOW IT WORKS */}
       <section className="relative py-32 bg-gradient-to-b from-[#0a0214] to-[#05000a] overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,#ca7ef620,transparent_70%)]" />
         <div className="relative z-10 max-w-6xl mx-auto px-6">

@@ -1,19 +1,19 @@
-// scripts/convert-images.js
+
 const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
 const glob = require('glob');
 
-const INPUT_GLOB = 'public/**/*.{jpg,jpeg,png}'; // prilagodi ako koristiš druge mape
+const INPUT_GLOB = 'public/**/*.{jpg,jpeg,png}'; 
 const OUTPUT_SUFFIXES = ['.webp', '.avif'];
-const BLUR_WIDTH = 20; // veličina za blur placeholder (manje = manja base64 string)
+const BLUR_WIDTH = 20; 
 
 async function convertFile(file) {
   const extname = path.extname(file);
   const dirname = path.dirname(file);
   const basename = path.basename(file, extname);
 
-  // zanemarujemo male ikone (manje od 10KB)
+
   const stat = fs.statSync(file);
   if (stat.size < 10 * 1024) {
     console.log(`Preskačem malu sliku: ${file}`);
@@ -26,7 +26,7 @@ async function convertFile(file) {
     blurDataURL: null,
   };
 
-  // generiraj webp i avif
+
   for (const suffix of OUTPUT_SUFFIXES) {
     const out = path.join(dirname, `${basename}${suffix}`);
     try {
@@ -46,7 +46,7 @@ async function convertFile(file) {
     }
   }
 
-  // generiraj blurDataURL iz male verzije (resize + webp)
+  
   try {
     const buffer = await sharp(file)
       .resize(BLUR_WIDTH)
@@ -70,8 +70,7 @@ function run() {
       const res = await convertFile(f);
       if (res) all.push(res);
     }
-    // Spremi mapu rezultata s blurDataURL da lako ubaciš u roomData
-    // zamijeni postojeći outPath s ovim:
+
     const outPath = path.join(__dirname, 'image-manifest.json');
     fs.writeFileSync(outPath, JSON.stringify(all, null, 2));
     console.log(`Završeno. Manifest spremljen u ${outPath}`);

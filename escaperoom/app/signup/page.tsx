@@ -20,7 +20,7 @@ export default function SignupPage() {
     setErrorMessage(null)
     setSuccessMessage(null)
 
-    // Validacija da su ime i prezime uneseni
+ 
     if (!firstName.trim() || !lastName.trim()) {
       setErrorMessage("Please enter both your first and last name.")
       setLoading(false)

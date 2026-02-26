@@ -1,4 +1,4 @@
-// app/page.tsx
+
 import HomeClient from "./_components/HomeClient"
 import { rooms } from "../lib/roomData"
 
@@ -30,11 +30,10 @@ const testimonials = [
 ]
 
 export default function Page() {
-  // Page stays a server component — only renders HomeClient (interactive island)
+
   return (
     <main className="flex flex-col">
       <HomeClient rooms={rooms} steps={steps} testimonials={testimonials} />
-      {/* Ako želiš, dodatne statične sekcije (server) možeš ovdje staviti — ali ja ih uključio u HomeClient radi jednostavnosti */}
     </main>
   )
 }

@@ -1,4 +1,3 @@
-// app/contact/page.tsx
 "use client"
 
 import { useState, useRef } from "react"
@@ -38,7 +37,6 @@ async function handleSubmit(e: React.FormEvent) {
 }
 
   function showToastTemporarily() {
-    // show toast for 4.5s
     if (toastTimeout.current) window.clearTimeout(toastTimeout.current)
     toastTimeout.current = window.setTimeout(() => setSuccessMsg(null), 4500)
   }
@@ -65,7 +63,7 @@ async function handleSubmit(e: React.FormEvent) {
                 <p className="text-sm text-gray-400 mb-6">Prefer email? Use the form — we reply fast. For urgent matters call us directly.</p>
 
                 <form onSubmit={handleSubmit} className="space-y-4" aria-label="Contact form">
-                  {/* hidden honeypot (should be visually hidden via CSS or inline style) */}
+                  {/* hidden honeypot */}
                   <input
                     aria-hidden
                     style={{ display: "none" }}

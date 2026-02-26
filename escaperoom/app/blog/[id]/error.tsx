@@ -12,8 +12,7 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    // Optionally log error
-    // console.error(error);
+  
   }, [error]);
   return (
     <main className="flex flex-col items-center p-10">

@@ -35,7 +35,6 @@ export function Navigation() {
     return name.slice(0, 2).toUpperCase()
   }
 
-  // zatvaranje dropdowna klikom izvan
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       const target = e.target as HTMLElement
@@ -47,7 +46,6 @@ export function Navigation() {
     return () => document.removeEventListener("click", handleClickOutside)
   }, [])
 
-  // smooth scroll na odjeljak rooms
   function scrollToRooms() {
     const el = document.getElementById("rooms")
     if (el) {
@@ -57,7 +55,6 @@ export function Navigation() {
     }
   }
 
-  // scroll-aware active link
 useEffect(() => {
   function handleScroll() {
     if (typeof window === "undefined") return

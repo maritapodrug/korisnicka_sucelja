@@ -27,7 +27,7 @@ export default function HeroSlider() {
   }, [index])
 
   return (
-    // na mobilu manja visina, na desktopu visoka hero
+ 
     <section className="relative min-h-[calc(100vh-80px)] pt-20 flex items-center justify-center overflow-hidden bg-black">
       <div className="absolute inset-0 z-0">
         {slides.map((src, i) => (
@@ -37,16 +37,16 @@ export default function HeroSlider() {
             alt={`hero ${i + 1}`}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw"
-            quality={85} // malo veća kvaliteta za hero sekciju
+            quality={85} 
             loading={i === index ? "eager" : "lazy"}
             className={
-              // object-position mijenjamo po breakpointu: na mobu rotate fokus gore (ako je subject na vrhu)
+              
               `absolute inset-0 object-cover transition-opacity duration-1000 ease-in-out will-change-opacity ` +
               (i === index ? "opacity-100" : "opacity-0") +
-              // primjer objekt pozicije: mobilni prikazuje više gornjeg dijela slike
+             
               " object-center sm:object-center"
             }
-            // opcionalno: ako želiš drugačiji fokus na mobilu
+            
              style={{ objectPosition: 'center 20%' }} 
           />
         ))}

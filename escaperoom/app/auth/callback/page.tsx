@@ -9,7 +9,6 @@ export default function AuthCallback() {
 
   useEffect(() => {
     const handleAuth = async () => {
-      // Ovo parsira token iz URL-a i sprema session
       const { data, error } = await supabase.auth.getSession()
 
       if (error) {
